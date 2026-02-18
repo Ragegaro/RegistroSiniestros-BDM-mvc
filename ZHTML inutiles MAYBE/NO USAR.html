@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Siniestros - Aseguradora Nacional</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; }
+        .card-header { background-color: #003366; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center py-3">
+                    <h3>Registro de Nuevo Siniestro</h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <form action="procesar_siniestro.php" method="POST" enctype="multipart/form-data">
+                        
+                        <div class="mb-4">
+                            <label for="poliza" class="form-label fw-bold">Número de Póliza</label>
+                            <input type="text" name="poliza" class="form-control" placeholder="Ej: POL-12345" required>
+                            <div class="form-text">Introduce el número que aparece en tu tarjeta de seguro.</div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Tipo de Siniestro</label>
+                                <select name="tipo" class="form-select" required>
+                                    <option value="">Seleccione una opción...</option>
+                                    <option value="choque">Choque / Colisión</option>
+                                    <option value="robo">Robo Total/Parcial</option>
+                                    <option value="cristales">Rotura de Cristales</option>
+                                    <option value="otros">Otros Daños</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Fecha del Evento</label>
+                                <input type="date" name="fecha" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Descripción de los hechos</label>
+                            <textarea name="descripcion" class="form-control" rows="4" placeholder="Cuéntanos brevemente qué sucedió..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Evidencia Fotográfica (Opcional)</label>
+                            <input type="file" name="fotos[]" class="form-control" multiple accept="image/*">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Enviar Reporte</button>
+                            <button type="reset" class="btn btn-link text-muted">Limpiar Formulario</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
