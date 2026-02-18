@@ -15,4 +15,7 @@ CREATE TABLE Usuario(
     userType varchar(50) default 'Asegurado' NOT NULL
 );
 
-CREATE TABLE Poliza();
+CREATE TABLE Poliza(
+ID INT PRIMARY KEY
+
+);
