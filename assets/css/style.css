@@ -1,3 +1,25 @@
-header{
-    color :green;
+
+header
+
+footer{
+position: relative;
 }
+
+/*.login-bg*/
+body{
+    
+    
+}
+.bg-login{
+    background-image: url(../img/Logfamily.jpg);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat ; 
+    background-attachment: fixed;
+}
+.container{
+    background:rgba(255,255,255,0.5) ;
+    padding: 10px;
+    
+}
+

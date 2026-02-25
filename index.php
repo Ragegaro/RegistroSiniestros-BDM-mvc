@@ -7,31 +7,28 @@ if (isset($_GET['page']))
 
 switch($page){
     case 'login':
-        require "controllers/UsuarioController.php";
-        UsuarioController::index();
+        require "controllers/LoginC.php";
+        loginController::index();
     break;  
     
-   case 'loginAuth': 
-        require "controllers/UsuarioController.php";
-        UsuarioController::login();
+    case 'loginAuth': 
+        require "controllers/LoginC.php";
+        loginController::login();
     break;
 
     case 'logout': 
-        require "controllers/UsuarioController.php";
-        UsuarioController::logout();
+        require "controllers/LoginC.php";
+        loginController::logout();
     break;  
 
     case 'admin': 
-        
-        require "views/front/vLogout.php";
-
+        require "views/front/LogoutV.php";
     break;
-
-
-
-
     
-    default:echo "<a href ='".urlsite."?page=login'>LOGIN </a>";
-    
+    default:
+        require "controllers/LoginC.php";
+        loginController::index();
+    //echo "<a href ='".urlsite."?page=login'>LOGIN </a>";
+      
     ; break;
 };

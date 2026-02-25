@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/style.css">
 </head>
 <body>
-   <header>
+   <header class="bg-danger">
 miau
 </header>
     
