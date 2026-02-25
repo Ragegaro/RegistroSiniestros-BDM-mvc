@@ -1,15 +1,14 @@
 
-header
+header{
+    color:white;
+
+}
 
 footer{
-position: relative;
+    position: relative;
 }
 
 /*.login-bg*/
-body{
-    
-    
-}
 .bg-login{
     background-image: url(../img/Logfamily.jpg);
     background-position: center center;

@@ -7,6 +7,7 @@ class loginController{
         if (isset($_SESSION['login']))
             header('location:'.urlsite);
         require "views/front/LoginV.php";
+        require "views/layouts/footer.php";
                 
     }
 
