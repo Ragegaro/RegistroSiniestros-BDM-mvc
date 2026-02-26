@@ -10,8 +10,9 @@
 <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/style.css">
 </head>
 <body>
-   <header class="bg-danger">
-        SEGUROS BANORTE    </header>
+    <header class="bg-danger">
+       <h1> SEGUROS BANORTE  </h1>
+    </header>
     
 
     
