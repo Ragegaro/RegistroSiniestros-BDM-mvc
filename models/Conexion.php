@@ -9,7 +9,7 @@ class Conexion{
                 PDO::ATTR_ERRMODE=> PDO::ERRMODE_EXCEPTION
             );
             $this->conexion =new PDO($dsn,DB_USER,DB_PASS);
-            echo"exito";
+         //  echo"exito";
             return $this->conexion;
         }
         catch(PDOException $e){

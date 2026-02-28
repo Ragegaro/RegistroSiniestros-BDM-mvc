@@ -21,10 +21,15 @@ switch($page){
         loginController::logout();
     break;  
 
-    case 'admin': 
+
+    
+    case 'supervisor': 
         require "views/front/LogoutV.php";
     break;
-    
+      case 'asegurado': 
+        require "views/front/asegurado/reportSiniestro.php";
+    break;
+
     default:
         require "controllers/LoginC.php";
         loginController::index();

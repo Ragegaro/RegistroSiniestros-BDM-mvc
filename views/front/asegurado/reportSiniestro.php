@@ -1,7 +1,7 @@
 <p>¿Qué siniestros deseas reportar</p>
 <div>
-    <ul>
-        <div class="siniesro">
+    
+        <div class="siniestro">
             <a href="">Choque</a>
         </div>
         <div class="siniestro">
@@ -27,5 +27,5 @@
         </div>
         
       <a>Llamar al Centro de Atencion</a>
-    </ul>
+    
 </div>

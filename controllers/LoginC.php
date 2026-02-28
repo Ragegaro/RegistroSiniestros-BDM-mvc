@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require "models/LoginM.php";
 
@@ -11,6 +12,12 @@ class loginController{
                 
     }
 
+
+
+
+
+
+    
     public static function login(){
         
         $_modelo = new LoginM();
@@ -20,15 +27,27 @@ class loginController{
 
         if ($_resultado){
             $_SESSION['login'] = $_alias;
-            header('location:'.urlsite."?page=admin");
+            //$_SESSION['rol']=$_resultado->rol;
+            if($_resultado =="supervisor")
+            header('location:'.urlsite."?page=supervisor");
             
         }
         else {
+            //header('location:'.urlsite."?page=asegurado");
             header('location:'.urlsite."?msg=No coinciden las credenciales");
             
         }
         
     }   
+
+
+
+
+
+
+
+
+
 
     public static function logout(){
        if (!isset($_SESSION['login']))
