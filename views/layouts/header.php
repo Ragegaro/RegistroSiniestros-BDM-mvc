@@ -8,10 +8,16 @@
     <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/bootstrap-4.6.min.css">
 <!--CSS puro-->
 <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/style.css">
+
+
+
 </head>
 <body>
     <header class="bg-danger">
-       <h1> SEGUROS BANORTE  </h1>
+        
+        <h1> SEGUROS BANORTE  </h1>
+        
+       
     </header>
     
 

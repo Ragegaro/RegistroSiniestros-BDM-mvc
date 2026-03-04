@@ -1,13 +1,26 @@
+<?php require "views/layouts/header.php";
+      require "views/layouts/navbar.php";
+?>
 
-<div>
-        bienvido usuario que quieres hacer hoy
+<div class="userAuth">
+    <div class="texto">
+        <h2>Bienvenido USUARIO</h2>
+        <p>¿En qué te podemos ayudar hoy?</p>
     </div>
-
-    <div>
-    ver mis polizas
+    <div class="btn_grande">
+        <button  onclick="window.location.href='<?php echo urlsite ?>?page=report'">
+        Reportar un siniestro
+        </button>
     </div>
-    <div>
-        <a href="reportSiniestro.php">Reportar un siniestro</a>
-
+    <div class="btn_sec">
+        <button  onclick="window.location.href='<?php echo urlsite ?>?page=polizas'">
+        Ver Polizas
+        </button>
+    
+        <button  onclick="window.location.href='<?php echo urlsite ?>?page=siniestros'">
+        Mis siniestros
+        </button>
     </div>
     
+
+</div>

@@ -1,31 +1,18 @@
-<p>¿Qué siniestros deseas reportar</p>
-<div>
-    
-        <div class="siniestro">
-            <a href="">Choque</a>
-        </div>
-        <div class="siniestro">
-            <a href="">Grúa</a>
-        </div>
-        
-        <div class="siniestro">
-            <a href="">Combustible</a>
-        </div>
-        <div class="siniestro">
-            <a href="">Paso de corriente</a>
-        </div>
+<?php require "views/layouts/header.php";
+      require "views/layouts/navbar.php";
+?>
 
-        <div class="siniestro">
-            <a href="">Robo</a>
-        </div>
-        <div class="siniestro">
-            <a href="">Cristales</a>
-        </div>
+<p class="titulo">¿Qué siniestro deseas reportar?</p>
 
-        <div class="siniestro">
-            <a href="">Ponchadura</a>
-        </div>
-        
-      <a>Llamar al Centro de Atencion</a>
-    
+<div class="grid-reportes">
+
+    <div class="opc-sin"><a href="">Choque</a></div>
+    <div class="opc-sin"><a href="">Grúa</a></div>
+    <div class="opc-sin"><a href="">Combustible</a></div>
+    <div class="opc-sin"><a href="">Paso de corriente</a></div>
+    <div class="opc-sin"><a href="">Robo</a></div>
+    <div class="opc-sin"><a href="">Cristales</a></div>
+
 </div>
+
+<a class="llamar" href="">Llamar al Centro de Atención</a>

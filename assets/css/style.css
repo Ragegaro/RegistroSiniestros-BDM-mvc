@@ -4,6 +4,7 @@ header{
 
 }
 
+
 footer{
     position: relative;
 }
@@ -21,4 +22,191 @@ footer{
     padding: 10px;
     
 }
+/*--NAVBAR--*/
+.Navbar {
+    background-color: #df3131; 
+    display: flex;
+    justify-content: space-around; 
+    align-items: center;
+    padding: 5px 0;
+}
 
+.Navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #e60000; 
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
+
+.Navbar a:hover {
+    background-color: #990000; /* Rojo más oscuro al pasar el mouse */
+    transform: scale(1.05);
+}
+
+/*---USER AUTH ASEGURADO--------*/
+.userAuth{
+    
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* centro más ancho */
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.texto{
+    grid-column: 2;
+}
+
+.btn_grande{
+    grid-column: 2;
+}
+
+.btn_grande button{
+    width: 100%;
+    padding: 30px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn_sec{
+    grid-column: 2;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.btn_sec button{
+    width: 100%; 
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+/*--SINIESTROS-------*/
+.contenedor-siniestros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.siniestro {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    transition: 0.3s ease;
+}
+
+.siniestro:hover {
+    transform: translateY(-5px);
+}
+
+.info {
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* Contenedor inferior */
+.acciones {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+/* Estatus */
+.estatus {
+    background-color: #c40000;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    flex: 1;
+    text-align: center;
+}
+
+/* Botón ver más */
+.vermas {
+    background-color: #990000;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    text-decoration: none;
+    flex: 1;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.vermas:hover {
+    background-color: #660000;
+}
+
+
+
+.titulo {
+    text-align: center;
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+.grid-reportes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    grid-template-rows: repeat(3, 120px); /* 3 filas */
+    gap: 20px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.opc-sin {
+    background-color: #c40000;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+.opc-sin a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.opc-sin:hover {
+    background-color: #990000;
+    transform: scale(1.05);
+}
+
+/* Botón llamar */
+.llamar {
+    display: block;
+    text-align: center;
+    margin: 30px auto;
+    background-color: #222;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    width: 300px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.llamar:hover {
+    background-color: black;
+}

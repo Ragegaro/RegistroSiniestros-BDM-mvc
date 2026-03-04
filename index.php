@@ -22,13 +22,28 @@ switch($page){
     break;  
 
 
-    
-    case 'supervisor': 
-        require "views/front/LogoutV.php";
-    break;
-      case 'asegurado': 
+    case 'report':
         require "views/front/asegurado/reportSiniestro.php";
+        require "views/front/LogoutV.php";
+        break;
+    
+    case 'polizas':
+        require "views/front/asegurado/polizas.php";
+        require "views/front/LogoutV.php";
+        break;
+        
+    case 'siniestros':
+        require "views/front/asegurado/siniestros.php";
+        //require "views/front/LogoutV.php";
+        break;
+
+
+
+    case 'supervisor': 
+        require "views/front/asegurado/UserAuthV.php";
+        //require "views/front/LogoutV.php";
     break;
+   
 
     default:
         require "controllers/LoginC.php";
