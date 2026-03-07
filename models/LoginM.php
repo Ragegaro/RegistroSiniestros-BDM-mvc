@@ -18,3 +18,5 @@ class LoginM{
             return false;
     }
 }
+//public static function crearUsario(){}
+//public static function obtenerUsuario(){}

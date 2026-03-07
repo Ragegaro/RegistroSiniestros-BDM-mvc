@@ -23,25 +23,27 @@ switch($page){
 
 
     case 'report':
-        require "views/front/asegurado/reportSiniestro.php";
-        require "views/front/LogoutV.php";
+        require "views/siniestros/tiposSiniestro.php";
+        
         break;
     
     case 'polizas':
-        require "views/front/asegurado/polizas.php";
-        require "views/front/LogoutV.php";
+        require "views/polizas/polizas.php";
+        
         break;
         
-    case 'siniestros':
-        require "views/front/asegurado/siniestros.php";
-        //require "views/front/LogoutV.php";
+    case 'lista':
+        require "views/siniestros/listarSiniestrosV.php";
+        break;
+    case 'choque': 
+        require "views/siniestros/reportar.php";
         break;
 
 
 
     case 'supervisor': 
-        require "views/front/asegurado/UserAuthV.php";
-        //require "views/front/LogoutV.php";
+        require "views/usuario/UserAuthV.php";
+        
     break;
    
 

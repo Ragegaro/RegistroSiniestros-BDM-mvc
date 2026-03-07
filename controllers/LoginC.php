@@ -7,7 +7,7 @@ class loginController{
     public static function index(){
         if (isset($_SESSION['login']))
             header('location:'.urlsite);
-        require "views/front/LoginV.php";
+        require "views/auth/LoginV.php";
         require "views/layouts/footer.php";
                 
     }
@@ -40,15 +40,7 @@ class loginController{
         
     }   
 
-
-
-
-
-
-
-
-
-
+    
     public static function logout(){
        if (!isset($_SESSION['login']))
             header('location:'.urlsite); 

@@ -17,7 +17,7 @@
         Ver Polizas
         </button>
     
-        <button  onclick="window.location.href='<?php echo urlsite ?>?page=siniestros'">
+        <button  onclick="window.location.href='<?php echo urlsite ?>?page=lista'">
         Mis siniestros
         </button>
     </div>

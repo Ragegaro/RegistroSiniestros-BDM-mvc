@@ -94,8 +94,10 @@ create table chat(
     foreign key (usuario_id) references usuario (id),
     foreign key (message_padre) references chat (id)    
 );
+--crear tabla historial estatus
 
--- no creo que esto sea necesario la tabla pago
+-- Si se puede quitar la tabal pago
+
 create table pago(
 	id int unsigned auto_increment primary key,
 	
@@ -109,3 +111,5 @@ create table pago(
         foreign key (siniestro_id) references siniestro(id),
         foreign key (usuario_id) references usuario(id)
 );
+
+

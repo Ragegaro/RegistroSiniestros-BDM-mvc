@@ -1,8 +1,9 @@
 <?php 
-$tipo = isset($_GET['tipo']) ? ucfirst($_GET['tipo']) : 'Siniestro';
+$tipo = isset($_GET['tipo']) ? ucfirst($_GET['tipo']) : 'Choque';
+//require "views/layouts/header.php";
 ?>
 
-<h2>Reporte de <?php echo $tipo; ?></h2>
+<h2>Reporte de  <?php echo $tipo; ?></h2>
 
 <form action="guardar_reporte.php" method="POST" class="form-reporte">
 
