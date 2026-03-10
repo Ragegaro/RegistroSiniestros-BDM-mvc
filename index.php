@@ -23,7 +23,7 @@ switch($page){
 
 
     case 'report':
-        require "views/siniestros/tiposSiniestro.php";
+        require "views/siniestros/tiposSiniestroV.php";
         
         break;
     
@@ -36,7 +36,7 @@ switch($page){
         require "views/siniestros/listarSiniestrosV.php";
         break;
     case 'choque': 
-        require "views/siniestros/reportar.php";
+        require "views/siniestros/reporteV.php";
         break;
 
 
