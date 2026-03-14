@@ -5,8 +5,8 @@
       //  foreach($siniestros as $siniestro) { 
     ?>
 
-    <div class="contenedor-siniestros">
-        <div class="siniestro">
+    <div class="contenedor-multiple">
+        <div class="P-S-individual">
 
             <div class="info">
                 <p>
@@ -27,9 +27,9 @@
                     Ver más
                 </a>
         </div>
-
     </div>
 
-<?php //} ?>
+<?php //
+//  end foreach} ?>
 
 
