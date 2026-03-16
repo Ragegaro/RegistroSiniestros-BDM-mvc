@@ -12,11 +12,6 @@ class loginController{
                 
     }
 
-
-
-
-
-
     
     public static function login(){
         

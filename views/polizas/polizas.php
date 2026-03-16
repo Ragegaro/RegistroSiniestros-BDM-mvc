@@ -21,7 +21,7 @@ require "views/layouts/header.php";
             
             <a href="">Eliminar</a>
             <a class="vermas" href="?page=detalle&id=<?php echo $siniestro['id']; ?>">
-                Ver más
+                Ver más numero 2
             </a>
             
          </div>
