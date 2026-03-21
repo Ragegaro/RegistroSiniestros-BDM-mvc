@@ -6,7 +6,7 @@
     <title>MVC </title>
 <!--añadimos un bootstrap-->
     <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/bootstrap-4.6.min.css">
-<!--CSS puro-->
+<!--CSS puro PARA RE-ESCRIBIR BOOTSTRAP-->
 <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/style.css">
 
 

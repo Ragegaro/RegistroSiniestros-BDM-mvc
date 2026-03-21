@@ -3,8 +3,10 @@ Pagina de aseguradora para registro de siniestros y subida de multimedia utiliza
 
 Las fotos del siniestro se guardan en BLOB por requisitos de evaluacion, pero eso puede generar una BD muy pesada 
 
- En la Tabla siniestro en el atributo direccion se optó por que un tipo TEXT por simiplicidad académica, pero en produccion se recomienda Latitud y Logitud en DECIMAL via API de google mpasmaps
+ En la Tabla siniestro en el atributo direccion se optó por que un tipo TEXT por simiplicidad académica, pero en produccion se recomienda Latitud y Logitud en DECIMAL via API de google mpas y usando la geolocalizacion del usuario
 
 
 
  Proxima corrección: unificar el contnedor de siniestro y poliza en un solo y cam biar el contenido segun su pagina
+
+  la tabla poliza tambien deberia tener un estatus de si la poliza esta vencida, o activa, pero por efectos practicos  se decidio eliminar

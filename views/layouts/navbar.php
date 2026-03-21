@@ -5,6 +5,7 @@
     <?php } else { ?>
         <a href="<?php echo urlsite ?>?page=lista">Mis siniestros</a>
     <?php } ?>
+    
 
     <a href="<?php echo urlsite ?>?page=ajustes">Ajustes</a>    
 

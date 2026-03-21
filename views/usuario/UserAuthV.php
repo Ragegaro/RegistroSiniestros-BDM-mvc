@@ -1,5 +1,4 @@
-<?php require "views/layouts/header.php";
-      require "views/layouts/navbar.php";
+<?php 
 ?>
 
 <div class="userAuth">
@@ -21,6 +20,4 @@
         Mis siniestros
         </button>
     </div>
-    
-
 </div>

@@ -1,11 +1,10 @@
 <?php
-     require "views/layouts/header.php";
-      require "views/layouts/navbar.php";
-    
-      //  foreach($siniestros as $siniestro) { 
-    ?>
+    // require "views/layouts/header.php";
+    //require "views/layouts/navbar.php";    
+   // foreach($siniestros as $siniestro) { 
+?>
 
-    <div class="contenedor-multiple">
+<div class="contenedor-multiple">
         <div class="P-S-individual">
 
             <div class="info">
@@ -23,13 +22,21 @@
                     <?php //echo $siniestro['estatus']; ?>
                 </div>
 
-                <a class="vermas" href="?page=detalle&id=<?php echo $siniestro['id']; ?>">
-                    Ver más
+                <a class="vermas" href="<?php echo urlsite?>?page=detalle">
+                    <!-- &id=<?php// echo $siniestro['id']; ?> -->
+                  Ver más
                 </a>
+            </div>
         </div>
-    </div>
+        
+
+
+</div>
+
+
 
 <?php //
 //  end foreach} ?>
+
 
 

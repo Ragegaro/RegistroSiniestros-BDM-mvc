@@ -2,21 +2,27 @@
 require "models/Conexion.php";
 class LoginM{
     private $_db;
+    
     public function __construct(){
         $this->_db=new Conexion();
     }
 
     public function logIn($alias,$password){
         $this->_db->conectar();
-        $log = $this-> _db->conexion->prepare("SELECT * FROM usuario WHERE alias='".$alias."' AND contrasena='".$password."'");
-        $log->execute();
+       // Usando SELECT (para pruebas)
+        $sql = "SELECT * FROM usuario WHERE alias = ? AND contrasena = ?";
+        //Version Final 
+        //$sql ="CALL sp_validar_usuario(?,?)";
+
+        $stmt=$this->_db->conexion->prepare($sql);
+
+        $stmt->execute([$alias,$password]);
+        $usuario=$stmt->fetch(PDO::FETCH_OBJ); 
         $this->_db->desconectar();
-        if ($log->fetch (PDO::FETCH_OBJ))
-            
-            return true;
+        if ($usuario)
+            return $usuario;
         else 
             return false;
     }
 }
-//public static function crearUsario(){}
-//public static function obtenerUsuario(){}
+?>

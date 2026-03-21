@@ -2,9 +2,10 @@
 require "views/layouts/header.php";
 ?>
 
-
-<h1>Mis polizas</h1>
-<button> Agregar polizas</button>
+<div class="polizas">
+    <h1>Mis polizas</h1>
+    <button  disabled="disabled"> Agregar polizas</button>
+</div>
 
 <div class="contenedor-multiple">
 
@@ -15,16 +16,16 @@ require "views/layouts/header.php";
                Certificado <?php// echo $siniestro['modelo']; ?><br>
                Estatus:<?php// echo $siniestro['numero']; ?><br>           
             </p>
-         </div>
+        </div>
 
-         <div class="acciones">
-            
-            <a href="">Eliminar</a>
+        <div class="acciones">
+            <div class="estatus">
+                <button class="btn"> Eliminar</button>
+            </div>
             <a class="vermas" href="?page=detalle&id=<?php echo $siniestro['id']; ?>">
-                Ver más numero 2
+                Ver más
             </a>
-            
-         </div>
+        </div>
     </div>
 
-</div>
+ </div>

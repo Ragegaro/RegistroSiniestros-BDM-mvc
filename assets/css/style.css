@@ -3,12 +3,30 @@ header{
     color:white;
 
 }
-
+a{
+    text-decoration: none;
+}
+a:hover{text-decoration: none;}
 
 footer{
     position: relative;
 }
 
+.btn{
+    background-color: #c40000;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+}
+
+.btn:hover{
+    background-color: #a00000;
+}
 /*.login-bg*/
 .bg-login{
     background-image: url(../img/Logfamily.jpg);
@@ -93,16 +111,18 @@ footer{
 }
 
 
-/*--SINIESTROS-------*/
-.contenedor-siniestros {
+/*--SINIESTROS y POLIZAS-------*/
+.contenedor-multiple {
+    
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     padding: 20px;
 }
 
-.siniestro {
-    background: white;
+.P-S-individual {
+    
+    background:white;
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -113,7 +133,7 @@ footer{
     transition: 0.3s ease;
 }
 
-.siniestro:hover {
+.P-S-individual:hover {
     transform: translateY(-5px);
 }
 

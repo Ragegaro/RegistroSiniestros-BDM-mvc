@@ -1,0 +1,48 @@
+STORE PROCEDURE
+log
+
+VIEWS 8 
+
+TRIGGER 2
+-para cambio de estatus y generar renglon en historial estatus
+FUNTIONS 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
