@@ -113,3 +113,5 @@ create table pago(
 );
 
 
+----------------------------------------
+ALTER TABLE rol add es_default tinyint(1) DEFAULT 0;

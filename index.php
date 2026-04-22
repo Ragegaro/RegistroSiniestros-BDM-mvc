@@ -23,8 +23,17 @@ switch($page){
     break;
 
     case 'sigIn':
-        require "views/auth/RegisterV.php";
+        require_once "controllers/UsuarioC.php";
+        $usuario = new UsuarioC();
+        $usuario->mostrarRegistro(); // Carga la vista
     break;
+
+    case 'sigInAuth':
+        require_once "controllers/UsuarioC.php";
+        $usuario = new UsuarioC();
+        $usuario->procesarRegistro(); // Procesa los datos
+    break;
+
 
     //-----------LOG AUTH------------//
    case 'supervisor': 

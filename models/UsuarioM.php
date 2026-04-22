@@ -6,13 +6,37 @@ class UsuarioM{
         $this->_db = new Conexion();
     }
 
-    public function registrar(){
+    public function registrar($nombre,$apellidoP,$apellidoM = null,
+        $nacimiento,$genero =null,$email,$password,$alias,$fotoperfil =null){
+
         $this->_db->conectar();
-        $sql =" INSERT INTO
+
+        $sql ="INSERT INTO usuario (nombre, apellido_p, apellido_m,
+        nacimiento,genero, email, contrasena, alias,foto_perfil, rol_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
         
-        "
+        $stmt = $this->_db->conexion->prepare($sql);
+        
+        $resultado=$stmt -> execute([
+            $nombre,
+            $apellidoP,
+            $apellidoM,
+            $nacimiento,
+            $genero,
+            $email,
+            $password,
+            $alias,
+            $fotoperfil,
+            3
+            ]);
+           
+        $this->_db->desconectar();
+        
+        return $resultado;
+        
+
+
         //Version final
-        //$sql="CALL sp_registrar_Usuario()";
+        //$sql="CALL sp_registrar_Usuario(:nombre,:_apellidosP, ApellidoM....)";
     }
     
     public function perfil($id){}

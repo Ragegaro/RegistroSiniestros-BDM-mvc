@@ -18,6 +18,8 @@ class LoginM{
 
         $stmt->execute([$alias,$password]);
         $usuario=$stmt->fetch(PDO::FETCH_OBJ); 
+        
+
         $this->_db->desconectar();
         if ($usuario)
             return $usuario;
