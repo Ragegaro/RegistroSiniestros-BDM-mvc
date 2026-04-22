@@ -1,6 +1,8 @@
 create table rol(
 	id tinyint unsigned  auto_increment primary key,
-	nombre varchar(50) not null
+	nombre varchar(50) not null,
+    es_default tinyint(1) DEFAULT 0
+    
 );
 create table usuario (
     id  INT(11) unsigned auto_increment primary key , 
@@ -13,6 +15,7 @@ create table usuario (
 	contrasena VARCHAR(255)NOT NULL,
 	alias VARCHAR (50)NOT NULL,
     foto_perfil BLOB,
+    estatus tinyint unsigned default (1),
     
     rol_id tinyint unsigned not null,
     foreign key (rol_id) references rol (id)
@@ -28,9 +31,11 @@ create table poliza(
     
     aseguradora_id int unsigned not null,
     usuario_id int unsigned not null,
+    vehiculo_id int unsigned not null,
     unique (num_poliza,aseguradora_id),
     foreign key (aseguradora_id) references aseguradoras(id),
-    foreign key (usuario_id) references usuario(id)
+    foreign key (usuario_id) references usuario(id),
+    foreign key (vehiculo_id) references vehiculo(id)
 );
 create table vehiculo(
 	id int unsigned primary key auto_increment,
@@ -39,9 +44,7 @@ create table vehiculo(
     color varchar(30),
     placas varchar (10) not null unique,
     num_serie varchar(50) not null unique,
-    usuario_id int unsigned not null,
     poliza_id int unsigned,
-    foreign key (usuario_id) references usuario (id),
     foreign key (poliza_id) references poliza (id)
 );
 
@@ -56,13 +59,11 @@ create table siniestro(
     direccion text not null,
     descripcion text,
     fecha_registro timestamp default current_timestamp,
-    vehiculo_id int unsigned not null,
     ajustador_id int unsigned not null,
-    asegurado_id int unsigned not null,
+    poliza_id int  unsigned not null,
     estatus_id tinyint unsigned not null,
-    foreign key (vehiculo_id) references vehiculo(id),
+    foreign key (poliza_id) references poliza(id),
     foreign key (ajustador_id) references usuario (id),
-    foreign key (asegurado_id) references usuario (id),
 	foreign key (estatus_id) references estatus(id)
 );
 create table historialestatus(
@@ -84,34 +85,22 @@ create table multimedia(
 );
 create table chat(
 	id int unsigned primary key auto_increment,
-	siniestro_id int unsigned not null,
-	usuario_id int unsigned not null,
 	mensaje text not null,
 	fechamensaje timestamp default current_timestamp,
+	siniestro_id int unsigned not null,
+	usuario_id int unsigned not null,
     mensaje_padre int unsigned null,    
     
     foreign key (siniestro_id) references siniestro (id),
     foreign key (usuario_id) references usuario (id),
     foreign key (message_padre) references chat (id)    
 );
---crear tabla historial estatus
-
--- Si se puede quitar la tabal pago
-
-create table pago(
-	id int unsigned auto_increment primary key,
-	
-		siniestro_id int unsigned not null,
-		usuario_id int unsigned not null,
-        pago_type ENUM ('Deducible','Reparacion', 'Perdida total' ) not null,
-        monto DECIMAL (10,2) not null,
-        fecha date not null,
-        recibo longblob null,
-        pagado boolean default false,
-        foreign key (siniestro_id) references siniestro(id),
-        foreign key (usuario_id) references usuario(id)
-);
-
-
-----------------------------------------
-ALTER TABLE rol add es_default tinyint(1) DEFAULT 0;
+ ----------------------------------------
+ 
+/*
+alter table usuario add column  estatus tinyint unsigned default (1)
+alter table siniestro add column poliza_id int unsigned not null
+ALTER TABLE siniestro add constraint fk_siniestro_poliza foreign key(poliza_id)references poliza(id);
+alter table  siniestro drop column vehiculo_id
+*/
+-----------------------------

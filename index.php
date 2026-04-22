@@ -59,11 +59,12 @@ switch($page){
 
 
 
+//--BOTONES MNAVBAR --//
 
 
-
-
-
+case 'ajustes':
+         require "views/usuario/EditProfileV.php";
+    break;
 
 
 

@@ -10,9 +10,11 @@ class LoginM{
     public function logIn($alias,$password){
         $this->_db->conectar();
        // Usando SELECT (para pruebas)
-        $sql = "SELECT * FROM usuario WHERE alias = ? AND contrasena = ?";
+        //$sql = "SELECT * FROM usuario WHERE alias = ? AND contrasena = ?";
+
+
         //Version Final 
-        //$sql ="CALL sp_validar_usuario(?,?)";
+        $sql ="CALL sp_validar_usuario(?,?)";
 
         $stmt=$this->_db->conexion->prepare($sql);
 

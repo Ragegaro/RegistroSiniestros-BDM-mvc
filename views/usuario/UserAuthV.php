@@ -1,9 +1,10 @@
 <?php 
+    require "controllers/loginC.php";
 ?>
 
 <div class="userAuth">
     <div class="texto">
-        <h2>Bienvenido USUARIO</h2>
+        <h2>Bienvenido <?php echo $_SESSION['alias']?></h2>
         <p>¿En qué te podemos ayudar hoy?</p>
     </div>
     <div class="btn_grande">
