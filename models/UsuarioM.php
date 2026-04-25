@@ -12,7 +12,8 @@ class UsuarioM{
         $this->_db->conectar();
 
        /* $sql ="INSERT INTO usuario (nombre, apellido_p, apellido_m,
-        nacimiento,genero, email, contrasena, alias,foto_perfil, rol_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        nacimiento,genero, email, contrasena, alias,foto_perfil, rol_id)
+        VALUES (?,?,?,?,?,?,?,?,?,?)";
         */
         $sql = "CALL sp_registrar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?)";
       $stmt = $this->_db->conexion->prepare($sql);

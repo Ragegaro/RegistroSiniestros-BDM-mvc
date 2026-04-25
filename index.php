@@ -87,12 +87,12 @@ case 'ajustes':
 
 
 
-/*
+
     case 'report':
-        require "views/siniestros/tiposSiniestroV.php";
+        require "views/siniestros/reporteV.php";
         
     break;
-    
+    /*
     case 'polizas':
         require "views/polizas/polizas.php";
         

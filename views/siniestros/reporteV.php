@@ -1,9 +1,9 @@
 <?php
-     require "views/layouts/header.php";
-      require "views/layouts/navbar.php";
+    require "views/layouts/header.php";
+    require "views/layouts/navbar.php";
     
-      //  foreach($siniestros as $siniestro) { 
-    ?>
+    //  foreach($siniestros as $siniestro) { 
+?>
 
 
 <h2>Reporte de Choque<?php// echo $tipo; ?></h2>

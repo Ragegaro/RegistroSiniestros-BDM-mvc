@@ -25,6 +25,16 @@ create table aseguradoras(
 	id int unsigned primary key auto_increment,
 	nombre varchar(100) not null
 );
+create table vehiculo(
+	id int unsigned primary key auto_increment,
+    marca varchar(30) not null,
+    modelo varchar(50)not null,
+    color varchar(30),
+    placas varchar (10) not null unique,
+    num_serie varchar(50) not null unique
+    /*poliza_id int unsigned,
+    foreign key (poliza_id) references poliza (id)*/
+);
 create table poliza(
 	id int unsigned auto_increment primary key,
     num_poliza varchar(50) not null,
@@ -37,17 +47,8 @@ create table poliza(
     foreign key (usuario_id) references usuario(id),
     foreign key (vehiculo_id) references vehiculo(id)
 );
-create table vehiculo(
-	id int unsigned primary key auto_increment,
-    marca varchar(30) not null,
-    modelo varchar(50)not null,
-    color varchar(30),
-    placas varchar (10) not null unique,
-    num_serie varchar(50) not null unique,
-    poliza_id int unsigned,
-    foreign key (poliza_id) references poliza (id)
-);
-
+show tables
+;
 create table estatus( 
 	id tinyint unsigned primary key auto_increment,
 	nombre varchar (100) not null
@@ -93,7 +94,7 @@ create table chat(
     
     foreign key (siniestro_id) references siniestro (id),
     foreign key (usuario_id) references usuario (id),
-    foreign key (message_padre) references chat (id)    
+    foreign key (mensaje_padre) references chat (id)    
 );
  ----------------------------------------
  
