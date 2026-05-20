@@ -25,21 +25,17 @@ switch($page){
     case 'sigIn':
         require_once "controllers/UsuarioC.php";
         $usuario = new UsuarioC();
-        $usuario->mostrarRegistro(); // Carga la vista
+        $usuario->mostrarRegistro(); 
     break;
 
     case 'sigInAuth':
         require_once "controllers/UsuarioC.php";
         $usuario = new UsuarioC();
-        $usuario->procesarRegistro(); // Procesa los datos
+        $usuario->procesarRegistro(); 
     break;
-
 
     //-----------LOG AUTH------------//
    case 'supervisor': 
-      
-        require "views/layouts/header.php";
-        require "views/layouts/navbar.php";
         require "views/usuario/AjustadorAdminAuthV.php";
    break;
 
@@ -47,72 +43,84 @@ switch($page){
         require "views/layouts/header.php";
         require "views/layouts/navbar.php";
         require "views/usuario/UserAuthV.php";
-    break;
-    //-----------SINIESTROS--------------//
 
-    case 'lista':
-        require "views/layouts/header.php";
-         require "views/layouts/navbar.php";
-        require "views/siniestros/listarSiniestrosV.php";
     break;
 
+  case 'editarPerfil':
+        require_once "controllers/UsuarioC.php";
+        $usuario = new UsuarioC();
+        $usuario->procesarEdicion(); 
+    break;
+    
 
 
 
 //--BOTONES MNAVBAR --//
 
 
-case 'ajustes':
-         require "views/usuario/EditProfileV.php";
+    case 'ajustes':
+            require "views/usuario/EditProfileV.php";
+        break;
+
+
+    case 'guardarAuto':
+        require_once "controllers/AutoC.php"; 
+        $auto = new AutoC();
+        $auto->agregarAuto(); 
+    break;
+
+
+
+
+    case 'agregarAuto':
+        require "views/layouts/header.php";
+        require "views/autos/agregarAutoV.php";
     break;
 
 
 
 
 
+//GUARDA SINIETROS
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    case 'guardarSiniestro':
+        require_once "controllers/SiniestroC.php";
+        $siniestro = new SiniestroC();
+        $siniestro->agregarSiniestro(); 
+    break;
 
 
     case 'report':
-        require "views/siniestros/reporteV.php";
-        
+        require "views/siniestros/reporteV.php";   
+        require_once "controllers/PolizaC.php";     
     break;
-    /*
-    case 'polizas':
-        require "views/polizas/polizas.php";
-        
-    break;
-        
-    
 
+
+    case 'lista':   
+        require "views/siniestros/listarSiniestrosV.php";
+    break;
+
+    case 'guardarEvaluacion':
+        require_once "controllers/SiniestroC.php";
+        $siniestro = new SiniestroC();
+        $siniestro->procesarEvaluacionYMultimedia();
+    break;
+
+    ///POLIZAs
+    
+    case 'polizas':
+        require "views/polizas/polizasV.php";
+        
+    break;
+        /*
     case 'choque': 
         require "views/siniestros/reporteV.php";
-    break;
-
- 
-
-    
-    
+    break;    
+    */
     case 'detalle':
-        require "views/layouts/header.php";
         require "views/siniestros/detalle.php";
     break;
-
+/*
     case 'ajustes':
          require "views/usuario/EditProfileV.php";
     break;

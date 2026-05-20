@@ -1,3 +1,28 @@
+/*DELIMITER//
+CREATE PROCEDURE sp_gestionUsuario(
+	IN _accion VARCHAR(20),
+	
+    IN _id INT,
+    IN _alias varchar(50),
+    IN _password varchar(255),
+    
+	IN _nombre varchar (50),
+    IN _apellidoP varchar (100),
+    IN _apellidoM varchar (100),
+    IN _nacimiento DATE,
+    IN _genero varchar(20),
+    IN _email varchar (100),
+    IN _fotoPerfil mediumblob 
+)
+BEGIN
+IF _accion = 'LogIn' then
+
+ 
+END//
+DELIMITER ;
+*/
+
+-- VALIDAR USUARIO
 DELIMITER //
 CREATE PROCEDURE sp_validar_usuario (IN p_alias VARCHAR(50),IN p_contrasena VARCHAR(255) )
 BEGIN
@@ -6,6 +31,9 @@ BEGIN
       AND contrasena = p_contrasena; 
 END //
 DELIMITER ;
+
+
+-- REgistrar Usuario
 
 DELIMITER //
 CREATE PROCEDURE sp_registrar_usuario (

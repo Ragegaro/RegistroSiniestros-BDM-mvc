@@ -21,6 +21,7 @@
             if ($_usuario){
                 $_SESSION['alias'] = $_usuario->alias;
                 $_SESSION['rol_id']= $_usuario->rol_id;
+                $_SESSION['id_usuario']=$_usuario->id;
 
                 switch ($_SESSION['rol_id']){
                     case '1'://rol_id=supervisor

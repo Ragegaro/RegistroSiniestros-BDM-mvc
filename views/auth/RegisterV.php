@@ -3,7 +3,7 @@
 
     <div class="container">
         <div class="row justify-content-center">   
-            <form action="<?php echo urlsite?>?page=sigInAuth" method="post">
+            <form action="<?php echo urlsite?>?page=sigInAuth" method="post" enctype="multipart/form-data">
                 <label for="">Nombre(s)</label>
                 <input type="text" class="form-control" name="txtNombres">
 
@@ -47,7 +47,7 @@
                 <input type="password" class="form-control" name="txtPassword_Confirm">
                 
                 <label>Foto de perfil</label>
-                <input type="file" name="fotos" multiple accept="image/*">
+                <input type="file" name="foto_perfil" accept="image/*">
                 
                 <br>
 

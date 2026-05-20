@@ -3,10 +3,11 @@
 ?>
 
 <h2>Evaluación del Ajustador</h2>
-<form action="guardar_evaluacion.php" method="POST" 
-      class="form-ajustador">
 
-    <!--<input type="hidden" name="id_siniestro" value="<?php //echo $id_siniestro; ?>>-->
+<form action="index.php?page=guardarEvaluacion" method="POST" enctype="multipart/form-data" class="form-ajustador">
+
+    <input type="hidden" name="id_siniestro" value="<?php echo $siniestro['id']; ?>">
+    
     <label>Diagnóstico preliminar</label>
     <textarea name="diagnostico" rows="4" required></textarea>
     
@@ -28,10 +29,9 @@
     <br>
 
     <label>Evidencia del siniestro</label>
-    <input type="file" name="fotos[]" multiple accept="image/*, video/*">
+    <input type="file" name="evidencias[]" multiple accept="image/*, video/*">
 
     <br>
 
-    <button type="submit">Guardar evaluación</button>
-
+    <button type="submit" name="btnEvaluacion">Guardar evaluación</button>
 </form>

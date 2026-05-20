@@ -14,7 +14,7 @@ create table usuario (
     email VARCHAR(100) NOT NULL UNIQUE,
 	contrasena VARCHAR(255)NOT NULL,
 	alias VARCHAR (50)NOT NULL,
-    foto_perfil BLOB,
+    foto_perfil longblob,
     estatus tinyint unsigned default (1),
     
     rol_id tinyint unsigned not null,
@@ -43,12 +43,12 @@ create table poliza(
     usuario_id int unsigned not null,
     vehiculo_id int unsigned not null,
     unique (num_poliza,aseguradora_id),
+
     foreign key (aseguradora_id) references aseguradoras(id),
     foreign key (usuario_id) references usuario(id),
     foreign key (vehiculo_id) references vehiculo(id)
 );
-show tables
-;
+
 create table estatus( 
 	id tinyint unsigned primary key auto_increment,
 	nombre varchar (100) not null
@@ -60,9 +60,9 @@ create table siniestro(
     direccion text not null,
     descripcion text,
     fecha_registro timestamp default current_timestamp,
-    ajustador_id int unsigned not null,
+    ajustador_id int unsigned,-- not null,
     poliza_id int  unsigned not null,
-    estatus_id tinyint unsigned not null,
+    estatus_id tinyint unsigned,-- not null,
     foreign key (poliza_id) references poliza(id),
     foreign key (ajustador_id) references usuario (id),
 	foreign key (estatus_id) references estatus(id)
@@ -78,7 +78,7 @@ create table historialestatus(
 create table multimedia(
 	id int unsigned primary key auto_increment,
     tipo enum ('Foto',"Video")not null,
-    archivo blob null,
+    archivo longblob null,
     ruta varchar(255) null,
     fecha timestamp default current_timestamp,
     siniestro_id int unsigned not null,

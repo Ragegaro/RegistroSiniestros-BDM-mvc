@@ -12,11 +12,12 @@ class Conexion{
         
             );
             $this->conexion =new PDO($dsn,DB_USER,DB_PASS,$opciones);
+            
          //  echo"exito";
             return $this->conexion;
         }
         catch(PDOException $e){
-            echo $e->getMessage(); 
+            echo $e->getMessage(); // quitar en futuras mejoras del proyecto
 
         }
     }

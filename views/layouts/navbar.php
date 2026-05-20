@@ -1,4 +1,4 @@
-<nav class="Navbar">
+<nav class="Navbar ">
 
     <?php if($page == 'lista') { ?>
         <a href="javascript:history.back()"> Regresar</a>
@@ -7,7 +7,7 @@
     <?php } ?>
     
 
-    <a href="<?php echo urlsite ?>?page=ajustes">Ajustes</a>    
+    <a href="<?php echo urlsite ?>?page=ajustes">Mi Perfil</a>
 
     <a href="<?php echo urlsite ?>?page=logout">Cerrar Sesión</a>
 
