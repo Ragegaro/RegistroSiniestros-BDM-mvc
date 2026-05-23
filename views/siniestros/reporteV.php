@@ -1,11 +1,11 @@
 <?php
-    require "views/layouts/header.php";
+/*    require "views/layouts/header.php";
     require "views/layouts/navbar.php";
     require "controllers/LoginC.php";
     require_once "controllers/SiniestroC.php";
    require_once "controllers/PolizaC.php";
     
-    $misPolizas=PolizaC::listarPolizas();  
+    $misPolizas=PolizaC::listarPolizas();  */
 ?>
 
 

@@ -1,5 +1,3 @@
-
-
 <div class="form-container">
     <h2>Registro de Auto</h2>
     <form action="<?php echo urlsite?>?page=guardarAuto" method="post">
@@ -15,6 +13,9 @@
 
         <label for="placas">Placas</label>
         <input type="text" id="placas" name="placas" required>
+
+        <label for="Cliente">Cliente</label>
+        <input type="text" id="Cliente" name="Cliente">
 
         <label for="serie">Número de Serie</label>
         <input type="number" id="serie" name="serie" required>

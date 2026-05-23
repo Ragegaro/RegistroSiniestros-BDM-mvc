@@ -1,9 +1,9 @@
 <?php
-    require "views/layouts/header.php";
+    /*require "views/layouts/header.php";
     require "views/layouts/navbar.php";  
     require "controllers/LoginC.php";
     require_once "controllers/SiniestroC.php";
-    $listaSiniestros = SiniestroC::listarSiniestros();
+    $listaSiniestros = SiniestroC::listarSiniestros();*/
  
 ?>
 

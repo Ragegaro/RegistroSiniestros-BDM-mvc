@@ -1,11 +1,11 @@
 <nav class="Navbar ">
+    <a href="<?php echo urlsite ?>?page=">Pagina Principal</a>
 
-    <?php if($page == 'lista') { ?>
-        <a href="javascript:history.back()"> Regresar</a>
-    <?php } else { ?>
-        <a href="<?php echo urlsite ?>?page=lista">Mis siniestros</a>
-    <?php } ?>
+    <a href="<?php echo urlsite ?>?page=">Regresar</a>
     
+    <a href="<?php echo urlsite ?>?page=">Siniestros</a>
+
+    <a href="<?php echo urlsite ?>?page=lista">Polizas</a>
 
     <a href="<?php echo urlsite ?>?page=ajustes">Mi Perfil</a>
 

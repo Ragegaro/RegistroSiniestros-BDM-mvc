@@ -1,5 +1,5 @@
 <?php 
-    require "views/layouts/header.php";
+    /*require "views/layouts/header.php";
     require "views/layouts/navbar.php";
     require_once "controllers/SiniestroC.php";
 
@@ -10,15 +10,11 @@
     if(!$siniestro) {
         echo "<div class='contenedor'><h2>Siniestro no encontrado.</h2></div>";
         exit;
-    }
+    }*/
 ?>
 
 <button disabled="disabled">CHAT </button>
 <div class="contenedor">
-    <!--<div class="datos">
-        icon
-        <h2>Datos del siniestro </h2><p>Tipo de siniestro : Choque</p>
-    </div>-->
    
     <div class="info-siniestro">
         <h2>Datos del siniestro</h2><br>
@@ -29,27 +25,56 @@
         <strong>Ubicacion: </strong> <?php echo $siniestro['direccion']; ?><br>
         <strong>Fecha:   </strong> <?php echo $siniestro['fecha']; ?>  <strong> Hora: </strong> <?php echo $siniestro['hora']; ?></strong><br>
         <strong>Estatus:</strong> <?php echo $siniestro['Estatus']; ?><br>
-        <br>
-        <p><strong>Descripción: </strong> <?php echo $siniestro['descripcion']; ?> </p>
+        <strong>Descripción: </strong> <?php echo $siniestro['descripcion']; ?> 
 
     </div>
     
+
     <div class="seguimiento">
-        <h2><strong>Seguimiento</strong></h2>
+        <h2>Seguimiento</h2>
         
         <?php// foreach?>
             <div class="segui-estatus">
-                <p><?php //estatus br fecha y hora del siniestro?>Registro de siniestro <br>Hora</p>
+                <p><?php //estatus br fecha y hora del siniestro?>Registro de siniestro</p>
             </div>
-        <?//endforeach?>
-            
+        <?//endforeach?>       
     </div>
+
+
 </div>
 
 <!--Aqui por medio del controlador se activa o desactiva lo siguiente-->
 
+
+
+<h2>Evaluación del Ajustador</h2>
+    <section>
+        <form action="index.php?page=" method="POST" enctype="multipart/form-data" class="form-ajustador">
+
+            <label>Diagnóstico preliminar</label>
+            <textarea name="diagnostico" rows="4" required></textarea>
+            
+            <label>Monto estimado de daños ($)</label>
+            <input type="number" name="monto" step="0.01" required>
+
+            <br>
+
+            <label>Estado del siniestro</label>
+            <select name="estatus" required>
+                <option value="En proceso"></option>
+            </select>
+            <br>
+
+            <label>Evidencia del siniestro</label>
+            <input type="file" name="evidencias[]" multiple accept="image/*, video/*">
+
+            <button type="submit" name="btnEvaluacion">Guardar evaluación</button>
+        </form>
+    </section>
+
+
 <?php 
-require "views/siniestros/evaluacionV.php";/*
+/*require "views/siniestros/evaluacionV.php";
     if(isset($_SESSION['rol'])&& $_SESSION['rol_id']=== '2'){
         require "views/siniestros/evaluacionV.php";
     }

@@ -9,13 +9,11 @@
 <!--CSS puro PARA RE-ESCRIBIR BOOTSTRAP-->
 <link rel="stylesheet" href="<?php echo urlsite ?>assets/css/style.css">
 
-
-
 </head>
 <body>
     <header class="bg-danger">
         
-        <h1> SEGUROS FCFM  </h1>
+        <a href="<?php echo urlsite ?>?page="> SEGUROS FCFM  </a>
         
        
     </header>

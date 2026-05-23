@@ -1,6 +1,5 @@
 <?php 
-echo
-    require "views/siniestros/listarSiniestrosV.php";
+    /*require "views/siniestros/listarSiniestrosV.php";*/
    ?>
 <div class="">
 

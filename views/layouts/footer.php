@@ -5,6 +5,6 @@
 </footer>
 
 </body>
-<script src="<?php echo urlsite; ?>assets/js/dev-reload.js"></script>
+    <script src="<?php echo urlsite; ?>assets/js/dev-reload.js"></script>
 </html>
 

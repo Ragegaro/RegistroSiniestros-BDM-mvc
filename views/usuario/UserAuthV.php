@@ -1,5 +1,5 @@
 <?php 
-    require "controllers/loginC.php";
+    //require "controllers/loginC.php";
 ?>
 
 <div class="userAuth">

@@ -36,13 +36,13 @@ switch($page){
 
     //-----------LOG AUTH------------//
    case 'supervisor': 
-        require "views/usuario/AjustadorAdminAuthV.php";
+     //   require "views/usuario/AjustadorAdminAuthV.php";
    break;
 
     case 'asegurado':
-        require "views/layouts/header.php";
+       /* require "views/layouts/header.php";
         require "views/layouts/navbar.php";
-        require "views/usuario/UserAuthV.php";
+        require "views/usuario/UserAuthV.php";*/
 
     break;
 
@@ -59,7 +59,7 @@ switch($page){
 
 
     case 'ajustes':
-            require "views/usuario/EditProfileV.php";
+            //require "views/usuario/EditProfileV.php";
         break;
 
 

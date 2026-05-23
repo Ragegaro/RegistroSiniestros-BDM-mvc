@@ -33,7 +33,7 @@
 
             }
         }
-        public static function listarSiniestros() {
+        public function listarSiniestros() {
         
             $modelo = new SiniestroM();
             $rol = $_SESSION['rol'] ?? '';
@@ -49,7 +49,7 @@
             }
         }
 
-        public function verDetalledSiniestro() {
+        public function verDetalledSiniestroID() {
             $id_sinestro = isset ($_GET['id']) ? $_GET['id']:null;
 
             //if ($id_sinestro===)
@@ -57,6 +57,17 @@
             return $siniestro;
                 
         }
+
+        public function editarSiniestroAjustador(){}
+
+        public function editarSiniestroSupervisor(){}
+        
+        public function (){}
+        
+        public function eliminarSiniestro(){}
+
+
+     
     }
     
     /*public function verDetalledSiniestro() {

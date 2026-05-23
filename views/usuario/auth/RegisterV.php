@@ -1,9 +1,10 @@
-<?php  require "views/layouts/header.php";?>
+
 <div class="bg bg-dark">
 
     <div class="container">
         <div class="row justify-content-center">   
-            <form action="<?php echo urlsite?>?page=sigInAuth" method="post" enctype="multipart/form-data">
+
+            <form action="<?php echo urlsite?>?page=" method="post" enctype="multipart/form-data">
                 <label for="">Nombre(s)</label>
                 <input type="text" class="form-control" name="txtNombres">
 
@@ -17,22 +18,16 @@
                 <input type="date" class="form-control" name="dateNacimiento" id="Fecha_nacimiento" >
 
                 <label for="">Genero</label> <br>
-<div class="genero">
-    <input type="radio" id="masculino" name="genero" value="masculino">
-    <label for="masculino">Masculino</label>
+                <div class="genero">
+                    <input type="radio" id="masculino" name="genero" value="masculino">
+                    <label for="masculino">Masculino</label>
 
-    <input type="radio" id="femenino" name="genero" value="femenino">
-    <label for="femenino">Femenino</label>
+                    <input type="radio" id="femenino" name="genero" value="femenino">
+                    <label for="femenino">Femenino</label>
 
-    <input type="radio" id="no_binario" name="genero" value="no_binario">
-    <label for="no_binario">No binario</label>
-</div>
-<!--                <select class ="form-control" name="estatus" required>
-                    <option value="Hombre">Seleccione</option>
-                    <option value="Hombre">Masculino</option>
-                    <option value="Mujer">Femenino</option>
-                    <option value="Rechazado">No binario</option>
-                </select>  -->
+                    <input type="radio" id="no_binario" name="genero" value="no_binario">
+                    <label for="no_binario">No binario</label>
+                </div>
 
                 <label for="">Correo electronico</label>
                 <input type="text" class="form-control" name="txtEmail">
@@ -54,8 +49,7 @@
                 <input type ="submit" class="btn btn-primary" value="Registrarse" name="btnSigIn">
 
             </form>
-        
-        
+            
         </div>
 
     </div>
@@ -63,10 +57,11 @@
 
 
 <?php 
-if (isset($_GET['success'])) {
+/*if (isset($_GET['success'])) {
     echo "Usuario registrado correctamente";
 }
 
 if (isset($_GET['error'])) {
     echo "Error al registrar usuario";
-}?>
+}*/
+?>
