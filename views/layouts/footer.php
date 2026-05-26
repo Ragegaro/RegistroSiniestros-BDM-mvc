@@ -1,5 +1,5 @@
 <footer>
-    <div class ="bg bg-danger text-center">
+    <div>
         <p>&copy Michelle y Raul BDM </p>
     </div>
 </footer>

@@ -4,7 +4,7 @@
     require "views/layouts/navbar.php";*/
 ?>
 
-<p class="titulo">¿Qué siniestro deseas reportar?</p>
+<p>¿Qué siniestro deseas reportar?</p>
 
 <div class="grid-reportes">
 

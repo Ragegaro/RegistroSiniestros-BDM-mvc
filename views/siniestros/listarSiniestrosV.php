@@ -9,7 +9,7 @@
 
 <h1>Mis Siniestros</h1>
 
-<div class="contenedor-multiple">
+<div>
 
     <?php if (empty($listaSiniestros)): ?>
         <p>Aún no tiene siniestros.</p>
@@ -18,8 +18,8 @@
         foreach($listaSiniestros as $siniestro): 
     ?>
 
-        <div class="P-S-individual">
-            <div class="info">
+        <div>
+            <div>
                 <p>
                     <strong>Póliza:</strong> <?php echo $siniestro->Poliza; ?><br>
                     <strong>Modelo:</strong> <?php echo $siniestro->Modelo; ?><br>
@@ -28,14 +28,14 @@
                 </p>
             </div>
 
-            <div class="acciones">
-                <div class="estatus">
+            <div>
+                <div>
                     <p><strong>Estatus:</strong></p>
                     <?php echo $siniestro->Estatus; ?>
                 </div>
 
-                <a class="vermas" href="<?php echo urlsite?>?page=detalle&id=<?php echo $siniestro-> id;?>">
-                  Ver más
+                <a href="<?php echo urlsite?>?page=detalle&id=<?php echo $siniestro-> id;?>">
+                    Ver más
                 </a>
             </div>
         </div>

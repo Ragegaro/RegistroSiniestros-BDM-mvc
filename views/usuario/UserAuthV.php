@@ -2,17 +2,19 @@
     //require "controllers/loginC.php";
 ?>
 
-<div class="userAuth">
-    <div class="texto">
+<div>
+    <div>
         <h2>Bienvenido <?php echo $_SESSION['alias']?></h2>
         <p>¿En qué te podemos ayudar hoy?</p>
     </div>
-    <div class="btn_grande">
+
+    <div>
         <button  onclick="window.location.href='<?php echo urlsite ?>?page=report'">
         Reportar un siniestro
         </button>
     </div>
-    <div class="btn_sec">
+    
+    <div>
         <button  onclick="window.location.href='<?php echo urlsite ?>?page=polizas'">
         Ver Polizas
         </button>
