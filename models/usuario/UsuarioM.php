@@ -6,18 +6,14 @@ class UsuarioM{
         $this->_db = new Conexion();
     }
 
-    public function registrar($nombre,$apellidoP,$apellidoM = null,
+    public function sigIn($nombre,$apellidoP,$apellidoM = null,
         $nacimiento,$genero =null,$email,$password,$alias,$fotoperfil =null)
         {
 
             $this->_db->conectar();
 
-        /* $sql ="INSERT INTO usuario (nombre, apellido_p, apellido_m,
-            nacimiento,genero, email, contrasena, alias,foto_perfil, rol_id)
-            VALUES (?,?,?,?,?,?,?,?,?,?)";
-            */
             $sql = "CALL sp_registrar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->_db->conexion->prepare($sql);
+            $stmt = $this->_db->conexion->prepare($sql);
         
             $resultado = $stmt->execute([
             $nombre,
@@ -37,10 +33,27 @@ class UsuarioM{
         return $resultado;
     }
     
- public function obtenerPorID($idUsuario){
+    public function logIn($alias,$password){
+        $this->_db->conectar();
+
+        $sql ="CALL sp_validar_usuario(?,?)";
+
+        $stmt=$this->_db->conexion->prepare($sql);
+        $stmt->execute([$alias,$password]);
+
+        $usuario=$stmt->fetch(PDO::FETCH_OBJ); 
+
+        $this->_db->desconectar();
+        if ($usuario)
+            return $usuario;
+        else 
+            return false;
+    }
+
+    public function obtenerPorID($idUsuario){
        
         $this->_db->conectar();
-        $sql = "SELECT id, nombre, apellido_p, apellido_m, nacimiento, genero, email, alias, foto_perfil, rol_id 
+        $sql = "SELECT nombre, apellido_p, apellido_m, nacimiento, genero, email, alias, foto_perfil, rol_id 
                 FROM usuario 
                 WHERE id = ?";
         
@@ -51,9 +64,9 @@ class UsuarioM{
         $this->_db->desconectar();
         
         return $resultado;
- }
+    }
  
-public function editarUsuario($id, $email, $password, $alias, $foto) {
+    public function editarUsuario($id, $email, $password, $alias, $foto) {
     $this->_db->conectar();
     
     // CASO 1: Cambió Contraseña Y Cambió Foto
@@ -83,7 +96,7 @@ public function editarUsuario($id, $email, $password, $alias, $foto) {
     
     $this->_db->desconectar();
     return $resultado;
-}
+    }
 
     
     public function eliminar(){}
@@ -94,8 +107,6 @@ public function editarUsuario($id, $email, $password, $alias, $foto) {
 
     public function listar(){}
 
-
-    
 
     
 }

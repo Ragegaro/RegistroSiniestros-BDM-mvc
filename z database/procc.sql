@@ -1,3 +1,4 @@
+use bdm_aseguradora
 /*DELIMITER//
 CREATE PROCEDURE sp_gestionUsuario(
 	IN _accion VARCHAR(20),
@@ -26,15 +27,14 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE sp_validar_usuario (IN p_alias VARCHAR(50),IN p_contrasena VARCHAR(255) )
 BEGIN
-    SELECT * FROM usuario 
+    SELECT id,alias,rol_id,slug FROM vLogin 
     WHERE alias = p_alias 
       AND contrasena = p_contrasena; 
-END //
+END
 DELIMITER ;
-
+show procedure
 
 -- REgistrar Usuario
-
 DELIMITER //
 CREATE PROCEDURE sp_registrar_usuario (
     IN p_nombre VARCHAR(100), IN p_apellido_p VARCHAR(100), IN p_apellido_m VARCHAR(100),
@@ -92,6 +92,37 @@ BEGIN
 END //
 DELIMITER ;
 */
+
+DELIMITER //
+
+CREATE PROCEDURE sp_verPoliza(IN p_idUser INT)
+BEGIN
+    SELECT 
+        Usuario,
+        Cliente,
+        Poliza,
+        Marca,
+        Modelo,
+        Aseguradora
+    FROM vPolizas
+    WHERE Usuario = p_idUser;
+END //
+
+DELIMITER ;
+
+
+DELIMITER //
+
+CREATE PROCEDURE sp_InsertarPoliza(IN p_nPoliza VARCHAR(50),
+    IN p_usuario_id INT, IN p_aseguradora_id INT, IN p_vehiculo INT
+)
+BEGIN
+    INSERT INTO polizas (num_poliza, aseguradora_id, usuario_id, vehiculo_id) 
+    VALUES (p_nPoliza, p_aseguradora_id, p_usuario_id, p_vehiculo);
+END //
+
+DELIMITER ;
+
 
 
 

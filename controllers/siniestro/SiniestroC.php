@@ -1,13 +1,24 @@
 <?php
-    require_once "models/SiniestroM.php";
-    //require_once "models/PolizaM.php";
-    //require_once "controllers/PolizaC.php";
+    require_once "models/siniestro/SiniestroM.php";
 
     class SiniestroC {
         private $modelo;
 
         public function __construct() {
             $this->modelo = new SiniestroM();
+        }
+
+        public function mostrarFormulario() {
+            if(!isset($_SESSION['id_usuario'])) {
+                header("Location: index.php");
+                exit;
+            }
+
+            require "views/layouts/header.php";
+            require "views/layouts/navbar.php";
+            require "views/siniestros/reporteV.php";   
+            require "views/layouts/footer.php";
+            
         }
 
         public function agregarSiniestro() {
@@ -32,21 +43,53 @@
             
 
             }
-        }
+        }  
+        
+        
         public function listarSiniestros() {
-        
-            $modelo = new SiniestroM();
-            $rol = $_SESSION['rol'] ?? '';
-            $idUsuario = $_SESSION['id_usuario'];
-        
-        
-            if ($rol === 'ajustador' || $rol === 'Supervisor') {
-                return $modelo->listarTodosLosSiniestros(); 
-            } 
-            
-            else {
-                return $modelo->listarSiniestros($idUsuario);
+            if (!isset($_SESSION['id_usuario'])) {
+                header("Location: index.php");
+                exit;
             }
+            $idUsuario = $_SESSION['id_usuario'];
+            $rolUsuario = $_SESSION['rol_slug'];
+    
+            require "views/layouts/header.php";
+            require "views/layouts/navbar.php";
+            if  ($rolUsuario === 'supervisor') {
+                $misSiniestros = $this->modelo->listarTodosLosSiniestros();
+            
+            } else {
+                
+                $misSiniestros = $this->modelo->listarSiniestros($idUsuario);
+              
+            }
+            $misSiniestros = is_array($misSiniestros) ? $misSiniestros : [];
+            /*switch ($_SESSION['rol_slug']){ 
+                case 'supervisor':
+                    //require "views/siniestros/listarSiniestrosSupervisorV.php";
+                    $todoSiniestros = $this->modelo->listarTodosLosSiniestros($idUsuario); 
+    
+                break;  
+
+                case 'ajustador':                    
+                    //require "views/siniestros/listarSiniestrosAjustadorV.php";
+                    $misSiniestros = $this->modelo->listarSiniestros($idUsuario);
+
+                break;
+
+                default:
+                $misSiniestros = $this->modelo->listarSiniestros($idUsuario);
+                    //return $this->modelo->listarSiniestros($_SESSION['id_usuario']);
+                break;
+            }*/
+          
+    require "views/siniestros/listarSiniestrosV.php";
+    require "views/layouts/footer.php";
+         
+            
+           
+
         }
 
         public function verDetalledSiniestroID() {
@@ -58,19 +101,21 @@
                 
         }
 
-        public function editarSiniestroAjustador(){}
-
-        public function editarSiniestroSupervisor(){}
-        
-        public function (){}
-        
-        public function eliminarSiniestro(){}
+     
+     
+     
 
 
      
     }
     
-    /*public function verDetalledSiniestro() {
+    /*
+       public function editarSiniestroAjustador(){}
+        public function editarSiniestroSupervisor(){}
+        public function eliminarSiniestro(){}
+
+
+    public function verDetalledSiniestro() {
         $idSiniestro = isset($_GET['id']) ? $_GET['id'] : 0;
         
         // 1. Traemos los datos del siniestro
@@ -140,4 +185,5 @@
             exit;
         }
     }*/
+        
 ?>

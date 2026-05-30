@@ -1,21 +1,12 @@
-<?php
-    /*require "views/layouts/header.php";
-    require "views/layouts/navbar.php";  
-    require "controllers/LoginC.php";
-    require_once "controllers/SiniestroC.php";
-    $listaSiniestros = SiniestroC::listarSiniestros();*/
- 
-?>
-
-<h1>Mis Siniestros</h1>
+<h1>Siniestros</h1>
 
 <div class="contenedor-multiple">
 
-    <?php if (empty($listaSiniestros)): ?>
+    <?php if (empty($misSiniestros)): ?>
         <p>Aún no tiene siniestros.</p>
     <?php else:
         
-        foreach($listaSiniestros as $siniestro): 
+        foreach($misSiniestros as $siniestro): 
     ?>
 
         <div class="P-S-individual">

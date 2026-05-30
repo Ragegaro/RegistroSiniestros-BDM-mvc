@@ -1,10 +1,6 @@
-<?php 
-    //require "controllers/loginC.php";
-?>
-
 <div class="userAuth">
     <div class="texto">
-        <h2>Bienvenido <?php echo $_SESSION['alias']?></h2>
+        <h2>Bienvenido <?php echo isset($usuario->alias) ? $usuario->alias : $_SESSION['alias']; ?></h2>
         <p>¿En qué te podemos ayudar hoy?</p>
     </div>
     <div class="btn_grande">
@@ -17,7 +13,7 @@
         Ver Polizas
         </button>
     
-        <button  onclick="window.location.href='<?php echo urlsite ?>?page=lista'">
+        <button  onclick="window.location.href='<?php echo urlsite ?>?page=misSiniestros'">
         Mis siniestros
         </button>
     </div>

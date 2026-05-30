@@ -1,10 +1,9 @@
-
 <div class="bg bg-dark">
 
     <div class="container">
         <div class="row justify-content-center">   
 
-            <form action="<?php echo urlsite?>?page=" method="post" enctype="multipart/form-data">
+            <form action="<?php echo urlsite?>?page=sigInAuth" method="post" enctype="multipart/form-data">
                 <label for="">Nombre(s)</label>
                 <input type="text" class="form-control" name="txtNombres">
 
@@ -44,7 +43,7 @@
                 <label>Foto de perfil</label>
                 <input type="file" name="foto_perfil" accept="image/*">
                 
-                <br>
+<br>
 
                 <input type ="submit" class="btn btn-primary" value="Registrarse" name="btnSigIn">
 
@@ -54,14 +53,3 @@
 
     </div>
 </div>
-
-
-<?php 
-/*if (isset($_GET['success'])) {
-    echo "Usuario registrado correctamente";
-}
-
-if (isset($_GET['error'])) {
-    echo "Error al registrar usuario";
-}*/
-?>

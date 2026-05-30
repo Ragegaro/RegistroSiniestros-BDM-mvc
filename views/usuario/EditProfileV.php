@@ -1,13 +1,3 @@
-<?php
-/* require "views/layouts/header.php"; 
-    require "views/layouts/navbar.php";  
-    require "controllers/LoginC.php";
-    require_once "controllers/UsuarioC.php";
-    $usuario = UsuarioC::mostrarPerfil();
- */
-
-?>
-
 <div class="bg bg-dark">
     <div class="container py-4"> <div class="row justify-content-center mb-4">
             <div class="col-auto text-center">

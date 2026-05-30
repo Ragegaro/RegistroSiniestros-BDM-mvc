@@ -1,3 +1,16 @@
+create or replace view vLogIn AS
+select
+	u.id,
+    u.alias,
+    u.contrasena,
+    u.rol_id,
+    r.nombre AS NombreRol,
+    r.slug
+    From usuario u
+    join rol r on u.rol_id = r.id;
+    
+    
+
 CREATE OR REPLACE VIEW vPolizas AS 
 SELECT 
 	p.id, 
@@ -11,7 +24,6 @@ FROM poliza p
 JOIN  vehiculo v ON p.vehiculo_id = v.id
 JOIN  aseguradoras a ON p.aseguradora_id = a.id
 JOIN usuario u ON p.usuario_id=u.id;
-
 
 
 CREATE OR REPLACE VIEW vListarSiniestros AS 

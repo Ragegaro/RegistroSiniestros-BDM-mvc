@@ -1,7 +1,10 @@
+CREATE DATABASE bdm_aseguradora;
+USE bdm_aseguradora;
+
 create table rol(
 	id tinyint unsigned  auto_increment primary key,
 	nombre varchar(50) not null,
-    es_default tinyint(1) DEFAULT 0
+    slug varchar(50)
     
 );
 create table usuario (
