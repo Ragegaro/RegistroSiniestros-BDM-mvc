@@ -14,9 +14,9 @@
 ?>
 
 <button disabled="disabled">CHAT </button>
-<div class="contenedor">
+<div>
    
-    <div class="info-siniestro">
+    <div>
         <h2>Datos del siniestro</h2><br>
         <strong>No. de siniestro: </strong> <?php echo $siniestro['id']; ?> <br>
         <strong>No. de Poliza:</strong> <?php echo $siniestro['Poliza']; ?> <strong> Aseguradora: </strong> <?php echo $siniestro['Aseguradora']; ?>   <br>  
@@ -30,11 +30,11 @@
     </div>
     
 
-    <div class="seguimiento">
+    <div>
         <h2>Seguimiento</h2>
         
         <?php// foreach?>
-            <div class="segui-estatus">
+            <div>
                 <p><?php //estatus br fecha y hora del siniestro?>Registro de siniestro</p>
             </div>
         <?//endforeach?>       

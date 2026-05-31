@@ -1,4 +1,4 @@
-<nav class="Navbar ">
+<nav>
     <a href="<?php echo urlsite ?>?page=">Pagina Principal</a>
 
     <a href="<?php echo urlsite ?>?page=">Regresar</a>
