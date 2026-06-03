@@ -55,6 +55,7 @@
             switch ($_SESSION['rol_slug']){
                 case 'supervisor':
                     require "views/usuario/AjustadorAdminAuthV.php";
+                    require "views/siniestros/listarSiniestrosV.php";
 
                 break;
 
@@ -82,14 +83,14 @@
         }        
 
         public function mostrarRegistro() {
-         if (isset($_SESSION['id_usuario'])) {
-            header('location: index.php?page=' . $_SESSION['rol_slug']);
-            exit;
-        }
+            if (isset($_SESSION['id_usuario'])) {
+                header('location: index.php?page=' . $_SESSION['rol_slug']);
+                exit;
+            }
 
-        require "views/layouts/header.php";
-        require "views/usuario/auth/RegisterV.php";
-        require "views/layouts/footer.php";
+            require "views/layouts/header.php";
+            require "views/usuario/auth/RegisterV.php";
+            require "views/layouts/footer.php";
         }
 
         public function procesarRegistro() {

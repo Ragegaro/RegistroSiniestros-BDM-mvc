@@ -5,7 +5,7 @@
     
     <a href="<?php echo urlsite ?>?page=misSiniestros">Siniestros</a>
 
-    <a href="<?php echo urlsite ?>?page=lista">Polizas</a>
+    <a href="<?php echo urlsite ?>?page=polizas">Polizas</a>
 
     <a href="<?php echo urlsite ?>?page=miPerfil">Mi Perfil</a>
 

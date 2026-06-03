@@ -11,7 +11,7 @@
                 foreach($misPolizas as $p): 
             ?>
 
-            <option value="<?php echo $p->id;?>"> <?php echo $p->Poliza . ' ' . $p->Marca . ' ' . $p->Modelo;?> </option>
+            <option value="<?php echo $p->id;?>"> <?php echo $p->Poliza . ' ' . $p->Marca . ' ' . $p->Modelo/*. ' ' . $p->Aseguradora*/;?> </option>
             
             <?php endforeach;?>
 

@@ -1,6 +1,6 @@
 <div>
     <div>   
-        <form action="<?php echo urlsite?>?page=" method="post" enctype="multipart/form-data">
+        <form action="<?php echo urlsite?>?page=sigInAuth" method="post" enctype="multipart/form-data">
             <label for="">Nombre(s)</label>
             <input type="text" class="form-control" name="txtNombres">
 

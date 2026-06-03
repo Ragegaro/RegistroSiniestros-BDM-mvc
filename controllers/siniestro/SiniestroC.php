@@ -14,6 +14,12 @@
                 exit;
             }
 
+            require_once "models/poliza/PolizaM.php";
+            $modeloPoliza = new PolizaM();
+
+            $misPolizas = $modeloPoliza->verPolizas($_SESSION['id_usuario']);
+            $misPolizas = is_array($misPolizas) ? $misPolizas : [];
+
             require "views/layouts/header.php";
             require "views/layouts/navbar.php";
             require "views/siniestros/reporteV.php";   
@@ -84,20 +90,31 @@
                 break;
             }*/
           
-    require "views/siniestros/listarSiniestrosV.php";
-    require "views/layouts/footer.php";
+            require "views/siniestros/listarSiniestrosV.php";
+            require "views/layouts/footer.php";
          
             
            
 
         }
 
-        public function verDetalledSiniestroID() {
-            $id_sinestro = isset ($_GET['id']) ? $_GET['id']:null;
+        public function verDetalledSiniestro() {
+            if (!isset($_SESSION['id_usuario'])) {
+                header("Location: index.php");
+                exit;
+            }
 
-            //if ($id_sinestro===)
-            $siniestro = $this->modelo->obtenerPorID($id_sinestro);
-            return $siniestro;
+            $id_siniestro = $_GET['id'];
+            $siniestro = $this->modelo->obtenerPorID($id_siniestro);
+
+            if (!$siniestro) {
+                echo "Siniestro no encontrado.";
+                exit;
+            }
+            require "views/layouts/header.php";
+            require "views/layouts/navbar.php";
+            require "views/siniestros/detalle.php";
+            require "views/layouts/footer.php";
                 
         }
 

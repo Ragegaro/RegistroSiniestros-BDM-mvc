@@ -16,7 +16,7 @@
         
         case 'logInAuth': 
             require "controllers/usuario/UsuarioC.php";
-            $controller= new UsuarioC();
+            $controller=new UsuarioC();
             $controller->logIn();
         break;
 
@@ -121,15 +121,17 @@
             $siniestro->procesarEvaluacionYMultimedia();
         break;
     //       Lectura siniestros      //
+    
         case 'misSiniestros':   
             require_once "controllers/siniestro/SiniestroC.php";
             $controller = new SiniestroC();
             $controller->listarSiniestros();
-          // require "views/siniestros/listarSiniestrosV.php";
         break;
     
         case 'detalle':
-            require "views/siniestros/detalle.php";
+            require_once "controllers/siniestro/SiniestroC.php";
+            $controller = new SiniestroC();
+            $controller->verDetalledSiniestro();
         break;
 
     //-----------Polizas-------------//
