@@ -26,8 +26,12 @@
     <label>Hora</label>
     <input type="time" name="hora" required>
 <br>
-    <label for=""> Foto del incidente</label>
-    <input type="file" name="foto">
+    <label for="evidencias">Evidencias del incidente (Fotos y Videos)</label>
+    <input type="file" name="evidencias[]" id="input-evidencias" multiple accept="image/*,video/*">
+    
+    <div id="preview-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;"></div>
+    <br>
+
 <br>
     <label>Descripción del suceso</label> <br>
     <textarea name="descripcion" rows="4" required></textarea>
@@ -36,3 +40,12 @@
     <button type="submit">Enviar reporte</button>
 
 </form>
+
+
+
+
+
+
+
+<script src="<?php echo urlsite?>assets/js/preview.js"></script>
+

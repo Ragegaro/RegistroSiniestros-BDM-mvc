@@ -121,7 +121,8 @@
             $siniestro->procesarEvaluacionYMultimedia();
         break;
     //       Lectura siniestros      //
-    
+
+
         case 'misSiniestros':   
             require_once "controllers/siniestro/SiniestroC.php";
             $controller = new SiniestroC();
@@ -133,7 +134,10 @@
             $controller = new SiniestroC();
             $controller->verDetalledSiniestro();
         break;
+    //     Multimedia siniestros     //
 
+
+    
     //-----------Polizas-------------//
     //        Lectura polizas        //
         

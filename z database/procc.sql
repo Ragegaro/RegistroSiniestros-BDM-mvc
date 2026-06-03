@@ -98,6 +98,7 @@ DELIMITER //
 CREATE PROCEDURE sp_verPoliza(IN p_idUser INT)
 BEGIN
     SELECT 
+		id,
         Usuario,
         Cliente,
         Poliza,
@@ -109,6 +110,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
 
 
 DELIMITER //

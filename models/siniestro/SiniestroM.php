@@ -22,8 +22,13 @@
                 $poliza
 
             ]);
+            $idInsertado = false;
+            if ($resultado) {
+                $idInsertado = $this->_db->conexion->lastInsertId();
+            }
+            
             $this->_db->desconectar();
-            return $resultado;
+            return $idInsertado;
         }
 //SE BORRARA ESTE METODO SI NO SE USA EN NINGUN LADO, SOLO ES PARA PRUEBAS
 
@@ -54,7 +59,6 @@
         }
 
 /////REMPLAZAR POR ESTOS
-
 /*
     public function verSiniestrosCliente($idUsuario){
         $this->_db->conectar();
@@ -98,21 +102,81 @@
             return $resultados;
 
 
-        }
-
-       
-
-
-
-       
+        }            
         
         public function modificar(){}
 
         public function asignarAjustador(){}
         
+        ///////////////////////////////////////////////////////////////////////////////
         
-        
-        //public function cerrarSiniestro(){}
+        public function insertarMultimedia($tipo, $archivoBlob, $ruta, $idSiniestro) {
+            $this->_db->conectar();
+            
+            $sql = "INSERT INTO multimedia (tipo, archivo, ruta, siniestro_id) VALUES (?, ?, ?, ?)";
+            
+            $stmt = $this->_db->conexion->prepare($sql);
+            $resultado = $stmt->execute([
+                $tipo, 
+                $archivoBlob, 
+                $ruta, 
+                $idSiniestro
+            ]);
+            
+            $this->_db->desconectar();
+            return $resultado;
+        }
+
+        public function obtenerMultimediaPorSiniestro($idSiniestro) {
+            $this->_db->conectar();
+     
+            $sql = "SELECT id, tipo, archivo, ruta FROM multimedia WHERE siniestro_id = ?";
+            $stmt = $this->_db->conexion->prepare($sql);
+            $stmt->execute([$idSiniestro]);
+            
+            $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $this->_db->desconectar();
+            return $resultados;
+        }
+
+        public function getHistorialEstatus($idSiniestro) {
+            $this->_db->conectar();
+     
+            $sql = "SELECT estatus_id, fecha_actu FROM historialestatus WHERE siniestro_id = ? ORDER BY fecha_actu DESC";
+            $stmt = $this->_db->conexion->prepare($sql);
+            $stmt->execute([$idSiniestro]);
+            
+            $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $this->_db->desconectar();
+            return $resultados;
+        }
+/*
+        public function cambiarEstatus($idSiniestro, $nuevoEstatus) {
+            $this->_db->conectar();
+            
+            try {
+                $this->_db->conexion->beginTransaction();
+
+                // 1. Actualizar el estatus actual en la tabla principal de siniestros (si tienes esa columna)
+                $sql1 = "UPDATE siniestro SET estatus = ? WHERE id = ?";
+                $stmt1 = $this->_db->conexion->prepare($sql1);
+                $stmt1->execute([$nuevoEstatus, $idSiniestro]);
+
+                // 2. Insertar el registro en la bitácora
+                $sql2 = "INSERT INTO historial_estatus (siniestro_id, estatus, comentario, usuario_id) VALUES (?, ?, ?, ?)";
+                $stmt2 = $this->_db->conexion->prepare($sql2);
+                $stmt2->execute([$idSiniestro, $nuevoEstatus, $comentario, $idUsuario]);
+
+                $this->_db->conexion->commit();
+                $resultado = true;
+            } catch (Exception $e) {
+                $this->_db->conexion->rollBack();
+                $resultado = false;
+            }
+
+            $this->_db->desconectar();
+            return $resultado;
+        }*/
 
     }   
 ?>

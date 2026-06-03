@@ -61,7 +61,7 @@
 
                 case 'ajustador':
                     require "views/usuario/AjustadorAdminAuthV.php";
-                    //require "views/siniestros/listarSiniestrosV.php";
+                
                 break;
                 
                 case 'asegurado':
@@ -172,5 +172,8 @@
                 exit;
             }
         }
+
+                
+     
     }
 ?>
