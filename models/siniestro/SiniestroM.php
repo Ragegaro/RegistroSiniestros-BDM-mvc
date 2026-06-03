@@ -30,8 +30,9 @@
             $this->_db->desconectar();
             return $idInsertado;
         }
-//SE BORRARA ESTE METODO SI NO SE USA EN NINGUN LADO, SOLO ES PARA PRUEBAS
 
+//SE BORRARA ESTE METODO SI NO SE USA EN NINGUN LADO, SOLO ES PARA PRUEBAS
+/*
         public function listarSiniestros($idUsuario){
             $this->_db->conectar();
             $sql= "SELECT * FROM vListarSiniestros where Usuario = ?";
@@ -57,39 +58,34 @@
                 
                 return $resultado;
         }
-
-/////REMPLAZAR POR ESTOS
-/*
-    public function verSiniestrosCliente($idUsuario){
-        $this->_db->conectar();
-        $sql = "call sp_verSiniestrosCliente(?)"; // Tu SP para clientes
-
-        $stmt = $this->_db->conexion->prepare($sql);
-        $stmt->execute([$idUsuario]);
-
-        $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $stmt->closeCursor();
-        $this->_db->desconectar();
-        return $resultados;
-    }
-
-    // NUEVA CONSULTA PARA EL AJUSTADOR: Ve solo los que él atiende
-    public function verSiniestrosAjustador($idAjustador){
-        $this->_db->conectar();
-        // Este procedimiento interno debe filtrar por la columna 'id_ajustador' o similar
-        $sql = "call sp_verSiniestrosPorAjustador(?)"; 
-
-        $stmt = $this->_db->conexion->prepare($sql);
-        $stmt->execute([$idAjustador]);
-
-        $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $stmt->closeCursor();
-        $this->_db->desconectar();
-        return $resultados;
-    }
 */
 
+    public function obtenerSiniestrosPorRol($idUsuario, $rolSlug) {
+            $this->_db->conectar();
+            
+            //es una vista planeada para traer todos esos datos, por eso el *
+            $sql = "SELECT * FROM vListarSiniestros";
+            $params = [];
 
+            
+            if ($rolSlug === 'ajustador') {
+                $sql .= " WHERE ajustador_id = ?";
+                $params[] = $idUsuario;
+                
+            } elseif ($rolSlug === 'asegurado') {
+                $sql .= " WHERE Usuario = ?"; 
+                $params[] = $idUsuario;
+            }
+            
+
+            $stmt = $this->_db->conexion->prepare($sql);
+            $stmt->execute($params);
+            
+            $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $this->_db->desconectar();
+            
+            return $resultados;
+        }
 
         public function obtenerPorID($idSiniestro){
             $this->_db->conectar();

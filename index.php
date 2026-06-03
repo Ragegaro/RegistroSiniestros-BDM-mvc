@@ -42,8 +42,10 @@
     //           PERFILES            //
     case 'supervisor': 
             require_once "controllers/usuario/UsuarioC.php";
+            require_once "controllers/siniestro/SiniestroC.php";
             $controller = new UsuarioC();
             $controller->mostrarPerfil();
+          
     break;
 
         case 'ajustador':
@@ -126,7 +128,7 @@
         case 'misSiniestros':   
             require_once "controllers/siniestro/SiniestroC.php";
             $controller = new SiniestroC();
-            $controller->listarSiniestros();
+            $controller->obtenerSiniestrosPorRol();
         break;
     
         case 'detalle':

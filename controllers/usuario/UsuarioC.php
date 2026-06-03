@@ -19,7 +19,7 @@
         require "views/usuario/auth/LoginV.php";
         require "views/layouts/footer.php";
         exit;                    
-    }
+       }
             
         public function logIn(){
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -44,34 +44,44 @@
         
         public function mostrarPerfil() {
             if (!isset($_SESSION['id_usuario'])) {
-               header('location:' . urlsite . "?page=login");
+                header('location:' . urlsite . "?page=login");
                 exit;
             }
             
-            $usuario = $this->modelo->obtenerPorID($_SESSION['id_usuario']);
+            $idUsuario = $_SESSION['id_usuario'];
+            $rolUsuario = $_SESSION['rol_slug']; 
+            $usuario = $this->modelo->obtenerPorID($idUsuario);
+
+            require_once "models/siniestro/SiniestroM.php";
+            $siniestroModel = new SiniestroM();
+
+            $misSiniestros = $siniestroModel->obtenerSiniestrosPorRol($idUsuario, $rolUsuario);
+            
+            $misSiniestros = is_array($misSiniestros) ? $misSiniestros : [];
+
             require "views/layouts/header.php";
             require "views/layouts/navbar.php";
             
-            switch ($_SESSION['rol_slug']){
+            switch ($rolUsuario) {
                 case 'supervisor':
                     require "views/usuario/AjustadorAdminAuthV.php";
-                    require "views/siniestros/listarSiniestrosV.php";
-
-                break;
+                    require "views/siniestros/listarSiniestrosV.php"; 
+                    break;
 
                 case 'ajustador':
                     require "views/usuario/AjustadorAdminAuthV.php";
-                
-                break;
-                
+                    require "views/siniestros/listarSiniestrosV.php"; 
+                    break;
+                    
                 case 'asegurado':
                     require "views/usuario/UserAuthV.php";
-                break;
+                    break;
 
                 default:
                     header('location: index.php?page=login');
-                exit;
+                    exit;
             }
+            
             require "views/layouts/footer.php";
         }
  
