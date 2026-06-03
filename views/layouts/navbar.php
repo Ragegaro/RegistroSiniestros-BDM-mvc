@@ -1,13 +1,15 @@
-<nav class="Navbar">
+<nav>
+    <a href="<?php echo urlsite ?>?page=">Pagina Principal</a>
 
-    <?php if($page == 'lista') { ?>
-        <a href="javascript:history.back()"> Regresar</a>
-    <?php } else { ?>
-        <a href="<?php echo urlsite ?>?page=lista">Mis siniestros</a>
-    <?php } ?>
+    <a href="<?php echo urlsite ?>?page=">Regresar</a>
     
+    <a href="<?php echo urlsite ?>?page=misSiniestros">Siniestros</a>
 
-    <a href="<?php echo urlsite ?>?page=ajustes">Ajustes</a>    
+    <a href="<?php echo urlsite ?>?page=polizas">Polizas</a>
+
+    <a href="<?php echo urlsite ?>?page=miPerfil">Mi Perfil</a>
+
+    <a href="<?php echo urlsite ?>?page=">Mis autos</a>
 
     <a href="<?php echo urlsite ?>?page=logout">Cerrar Sesión</a>
 

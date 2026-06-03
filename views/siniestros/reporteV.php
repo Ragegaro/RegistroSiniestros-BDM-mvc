@@ -1,48 +1,51 @@
-<?php
-     require "views/layouts/header.php";
-      require "views/layouts/navbar.php";
-    
-      //  foreach($siniestros as $siniestro) { 
-    ?>
+<h2>Reporte de Choque</h2>
 
-
-<h2>Reporte de Choque<?php// echo $tipo; ?></h2>
-
-<form action="guardar_reporte.php" method="POST" class="form-reporte">
-
-<!--    <input type="hidden" name="tipo" value="<?php echo $tipo; ?>">-->
+<form action="<?php echo urlsite?>?page=guardarSiniestro" method="POST"  enctype="multipart/form-data" class="form-reporte" >
 
     <label>Número de póliza</label>
-    <select name="poliza" id="poliza">
-        <option value=""> Seleccione una póliza</option>
-        <?php //foreach($polizas as $p):?>
-        <option value="<?php echo $p['id_poliza'];?>">
-            <?php// echo $P['NUMERO_POLIZA'].'-'.$p['coche']:?>
-        </option>
-        <?php ///endforeach;?>
-    </select>
-    
-<br>
+        
+        <select name="SelectPoliza" id="poliza" required>
+            <option value="">Seleccione una póliza</option>
+                
+            <?php
+                foreach($misPolizas as $p): 
+            ?>
 
+            <option value="<?php echo $p->id;?>"> <?php echo $p->Poliza . ' ' . $p->Marca . ' ' . $p->Modelo/*. ' ' . $p->Aseguradora*/;?> </option>
+            
+            <?php endforeach;?>
+
+        </select>
+<br>
     <label>Dirección del incidente</label>
     <input type="text" name="ubicacion" required>
-
 <br>
-
     <label>Fecha</label>
     <input type="date" name="fecha" required>
-
 <br>
-
     <label>Hora</label>
     <input type="time" name="hora" required>
 <br>
+    <label for="evidencias">Evidencias del incidente (Fotos y Videos)</label>
+    <input type="file" name="evidencias[]" id="input-evidencias" multiple accept="image/*,video/*">
+    
+    <div id="preview-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;"></div>
+    <br>
 
+<br>
     <label>Descripción del suceso</label> <br>
     <textarea name="descripcion" rows="4" required></textarea>
 <br>
-<a class="vermas" href="<?php echo urlsite?>?page=detalle">Enviar Reporte</a>
+    <!--<a class="vermas" href="<?php echo urlsite?>?page=detalle">Enviar Reporte</a>-->
+    <button type="submit">Enviar reporte</button>
 
-<!--    <button type="submit">Enviar reporte</button>-->
+</form>
 
-</form
+
+
+
+
+
+
+<script src="<?php echo urlsite?>assets/js/preview.js"></script>
+

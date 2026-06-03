@@ -10,3 +10,6 @@ Las fotos del siniestro se guardan en BLOB por requisitos de evaluacion, pero es
  Proxima corrección: unificar el contnedor de siniestro y poliza en un solo y cam biar el contenido segun su pagina
 
   la tabla poliza tambien deberia tener un estatus de si la poliza esta vencida, o activa, pero por efectos practicos  se decidio eliminar
+
+
+  El SLUG SE USA PARA SELECCIONAR LA VIES SEGUN EL USUARIO

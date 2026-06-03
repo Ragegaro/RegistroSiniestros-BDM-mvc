@@ -1,14 +1,13 @@
 <?php 
-$alias= "admine";
-?>
-<div class="">
+    /*require "views/siniestros/listarSiniestrosV.php";*/
+   ?>
+<div>
 
-    <div class="texto">
-        <h2>Bienvenido <?php echo $alias;?></h2>
-        BUSQUEDA <br>     
-       <?php require "views/layouts/busqueda.html";?>
+    <div>
+       <h2>Bienvenido <?php echo $_SESSION['alias']?></h2>
+        
+       <?php //require "views/layouts/busqueda.html";?>
         
     </div>
-       <?php require "views/siniestros/listarSiniestrosV.php";?>
-     
+        
 </div>
