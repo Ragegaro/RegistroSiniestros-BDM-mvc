@@ -9,8 +9,6 @@ select
     From usuario u
     join rol r on u.rol_id = r.id;
     
-    
-
 CREATE OR REPLACE VIEW vPolizas AS 
 SELECT 
 	p.id, 
@@ -34,8 +32,9 @@ SELECT
     s.direccion,
     s.descripcion,
     vp.Poliza,
-    vp.Usuario AS UsuarioID,
+    vp.Usuario,
     vp.Cliente AS nombreCliente,
+    s.ajustador_id,
     vp.Marca,
     vp.Modelo,
     vp.Aseguradora,
@@ -45,3 +44,6 @@ FROM siniestro s
 JOIN vPolizas vp ON s.poliza_id = vp.id
 LEFT JOIN estatus e ON s.estatus_id = e.id
 LEFT JOIN usuario u_ajustador ON s.ajustador_id = u_ajustador.id;
+
+
+-- CReate or replace view vHistorialSegumiento AS

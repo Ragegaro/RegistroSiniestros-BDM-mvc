@@ -17,8 +17,6 @@ CREATE PROCEDURE sp_gestionUsuario(
 )
 BEGIN
 IF _accion = 'LogIn' then
-
- 
 END//
 DELIMITER ;
 */
