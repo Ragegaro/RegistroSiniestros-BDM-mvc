@@ -69,25 +69,25 @@ class UsuarioM{
     public function editarUsuario($id, $email, $password, $alias, $foto) {
     $this->_db->conectar();
     
-    // CASO 1: Cambió Contraseña Y Cambió Foto
+    // Cambió Contraseña Y Cambió Foto
     if ($password !== null && $foto !== null) {
         $sql = "UPDATE usuario SET email = ?, alias = ?, contrasena = ?, foto_perfil = ? WHERE id = ?";
         $stmt = $this->_db->conexion->prepare($sql);
         $resultado = $stmt->execute([$email, $alias, $password, $foto, $id]);
     } 
-    // CASO 2: Cambió Contraseña pero NO la Foto
+    //  Cambió Contraseña pero NO la Foto
     else if ($password !== null && $foto === null) {
         $sql = "UPDATE usuario SET email = ?, alias = ?, contrasena = ? WHERE id = ?";
         $stmt = $this->_db->conexion->prepare($sql);
         $resultado = $stmt->execute([$email, $alias, $password, $id]);
     } 
-    // CASO 3: NO cambió contraseña pero SÍ la Foto 
+    //  NO cambió contraseña pero SÍ la Foto 
     else if ($password === null && $foto !== null) {
         $sql = "UPDATE usuario SET email = ?, alias = ?, foto_perfil = ? WHERE id = ?";
         $stmt = $this->_db->conexion->prepare($sql);
         $resultado = $stmt->execute([$email, $alias, $foto, $id]);
     } 
-    // CASO 4: Solo cambió texto (Email o Alias), mantiene foto y contraseña iguales
+    //  Solo cambió texto (Email o Alias), mantiene foto y contraseña iguales
     else {
         $sql = "UPDATE usuario SET email = ?, alias = ? WHERE id = ?";
         $stmt = $this->_db->conexion->prepare($sql);
@@ -98,15 +98,25 @@ class UsuarioM{
     return $resultado;
     }
 
+    public function getDashboardAdmin() {
+        $this->_db->conectar();
+        $datos = [];
+            
     
-    public function eliminar(){}
+        $stmt1 = $this->_db->conexion->query("SELECT * FROM vDashboardAdmin");
+        $datos['resumen_estatus'] = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+            
     
-    
+        $stmt2 = $this->_db->conexion->query("SELECT * FROM vListarAjustadores");
+        $datos['ajustadores'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+            
+        
+        $stmt3 = $this->_db->conexion->query("SELECT * FROM vListarClientes LIMIT 10"); // Ponemos límite para no saturar la vista principal
+        $datos['clientes'] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-    public function listar(){}
-
+        $this->_db->desconectar();
+        return $datos;
+    }
 
     
 }

@@ -117,18 +117,18 @@
             $siniestro->agregarSiniestro(); 
         break;
 
-        case 'guardarEvaluacion':
-            require_once "controllers/SiniestroC.php";
+        /*case 'guardarEvaluacion':
+            require_once "controllers/siniestro/SiniestroC.php";
             $siniestro = new SiniestroC();
             $siniestro->procesarEvaluacionYMultimedia();
-        break;
+        break;*/
     //       Lectura siniestros      //
 
 
         case 'misSiniestros':   
             require_once "controllers/siniestro/SiniestroC.php";
             $controller = new SiniestroC();
-            $controller->obtenerSiniestrosPorRol();
+            $controller->listarSiniestros();
         break;
     
         case 'detalle':
@@ -138,8 +138,21 @@
         break;
     //     Multimedia siniestros     //
 
+    //     Actualizar siniestros     //
+        case 'actualizarEstatus':
+            require_once "controllers/siniestro/SiniestroC.php";
+            $controller = new SiniestroC();
+            $controller->actualizarEstatus();
+        break;
 
-    
+        case 'guardarEdicionEvaluacion':
+            require_once "controllers/siniestro/SiniestroC.php";
+            $controller = new SiniestroC();
+            $controller->guardarEvaluacion();
+        break;
+
+     
+
     //-----------Polizas-------------//
     //        Lectura polizas        //
         

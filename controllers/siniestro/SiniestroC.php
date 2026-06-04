@@ -54,51 +54,25 @@
 
             }
         }  
-        
+                
         public function listarSiniestros() {
             if (!isset($_SESSION['id_usuario'])) {
                 header("Location: index.php");
                 exit;
             }
+
             $idUsuario = $_SESSION['id_usuario'];
             $rolUsuario = $_SESSION['rol_slug'];
-    
+
+            require_once "models/siniestro/SiniestroM.php";
+            $siniestroModel = new SiniestroM();
+            $misSiniestros = $siniestroModel->obtenerSiniestrosPorRol($idUsuario, $rolUsuario);
+            $misSiniestros = is_array($misSiniestros) ? $misSiniestros : [];
+        
             require "views/layouts/header.php";
             require "views/layouts/navbar.php";
-            if  ($rolUsuario === 'supervisor') {
-                $misSiniestros = $this->modelo->listarTodosLosSiniestros();
-            
-            } else {
-                
-                $misSiniestros = $this->modelo->listarSiniestros($idUsuario);
-              
-            }
-            $misSiniestros = is_array($misSiniestros) ? $misSiniestros : [];
-            /*switch ($_SESSION['rol_slug']){ 
-                case 'supervisor':
-                    //require "views/siniestros/listarSiniestrosSupervisorV.php";
-                    $todoSiniestros = $this->modelo->listarTodosLosSiniestros($idUsuario); 
-    
-                break;  
-
-                case 'ajustador':                    
-                    //require "views/siniestros/listarSiniestrosAjustadorV.php";
-                    $misSiniestros = $this->modelo->listarSiniestros($idUsuario);
-
-                break;
-
-                default:
-                $misSiniestros = $this->modelo->listarSiniestros($idUsuario);
-                    //return $this->modelo->listarSiniestros($_SESSION['id_usuario']);
-                break;
-            }*/
-          
             require "views/siniestros/listarSiniestrosV.php";
             require "views/layouts/footer.php";
-         
-            
-           
-
         }
 
         public function verDetalledSiniestro() {
@@ -111,6 +85,8 @@
             $siniestro = $this->modelo->obtenerPorID($id_siniestro);
             $siniestro['multimedia'] = $this->modelo->obtenerMultimediaPorSiniestro($id_siniestro);
             $historial= $this->modelo->getHistorialEstatus($id_siniestro);
+
+            $listaEstatus = $this->modelo->obtenerTodosEstatus();
 
             if (!$siniestro) {
                 echo "Siniestro no encontrado.";
@@ -127,38 +103,29 @@
 
 
 
-        /*
-        public function actualizarEstatus() {
-            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_siniestro'])) {
+// Procesa el diagnóstico
+        public function guardarEvaluacion() {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['diagnostico'])) {
                 $idSiniestro = $_POST['id_siniestro'];
-                $nuevoEstatus = $_POST['estatus'];
-                $comentario = $_POST['comentario'];
-                $idUsuario = $_SESSION['id_usuario']; // Quien hace el cambio
-
-                $this->modelo->cambiarEstatus($idSiniestro, $nuevoEstatus, $comentario, $idUsuario);
-
-                header("Location: index.php?controller=Siniestro&action=verDetalledSiniestro&id=" . $idSiniestro . "&success=estatus");
-                exit;
-            }
-        }
-        */
-/*   INCOMPLETO
-    public function guardarEvaluacionAjustador() {
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $idSiniestro = $_POST['id_siniestro'];
+                $diagnostico = trim($_POST['diagnostico']);
                 
-                // ... Aquí va tu lógica de actualizar estatus, guardar diagnóstico, etc ...
-
-                // Y simplemente reutilizas tu motor de subida para las evidencias del ajustador
-                if (isset($_FILES['evidencias']) && !empty($_FILES['evidencias']['name'][0])) {
-                    $this->procesarArchivosMultimedia($idSiniestro, $_FILES['evidencias']);
-                }
-
-                header("Location: index.php?controller=Siniestro&action=verDetalledSiniestro&id=" . $idSiniestro);
+                $this->modelo->actualizarDiagnostico($idSiniestro, $diagnostico);
+                header("Location: index.php?page=detalle&id=" . $idSiniestro . "&msg=EvaluacionGuardada");
                 exit;
             }
         }
-*/
+
+        // Procesa el cambio de estatus del Admin
+        public function actualizarEstatus() {
+            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nuevo_estatus'])) {
+                $idSiniestro = $_POST['id_siniestro'];
+                $estatus = $_POST['nuevo_estatus'];
+                
+                $this->modelo->cambiarEstatus($idSiniestro, $estatus);
+                header("Location: index.php?page=detalle&id=" . $idSiniestro . "&msg=EstatusActualizado");
+                exit;
+            }
+        }
 
 
         
@@ -196,6 +163,10 @@
     
         }
     }
+
+
+
+
 
         
 ?>

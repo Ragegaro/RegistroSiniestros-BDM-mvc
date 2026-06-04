@@ -37,7 +37,7 @@ DELIMITER //
 CREATE PROCEDURE sp_registrar_usuario (
     IN p_nombre VARCHAR(100), IN p_apellido_p VARCHAR(100), IN p_apellido_m VARCHAR(100),
     IN p_nacimiento DATE, IN p_genero VARCHAR(20), IN p_email VARCHAR(150),
-    IN p_contrasena VARCHAR(255), IN p_alias VARCHAR(50), IN p_foto_perfil VARCHAR(255)
+    IN p_contrasena VARCHAR(255), IN p_alias VARCHAR(50), IN p_foto_perfil longblob
 )
 BEGIN
     INSERT INTO usuario (

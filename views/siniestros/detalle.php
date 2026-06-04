@@ -5,6 +5,9 @@
         <h2>Datos del siniestro</h2><br>
         <strong>No. de siniestro: </strong> <?php echo $siniestro['id']; ?> <br>
         <strong>No. de Poliza:</strong> <?php echo $siniestro['Poliza']; ?> <strong> Aseguradora: </strong> <?php echo $siniestro['Aseguradora']; ?>   <br>  
+            <?php if ($_SESSION['rol_slug'] !== 'asegurado'): ?>
+                <strong>Nombre del Asegurado:</strong> <?php echo $siniestro['nombreCliente']; ?><br>
+            <?php endif; ?>
         <strong>Auto: </strong> <?php echo $siniestro['Marca']; ?>  <strong> Modelo: </strong> <?php echo $siniestro['Modelo']; ?></strong><br>
         <strong>Ajustador: </strong> <?php echo $siniestro['Ajustador']; ?><br>
         <strong>Ubicacion: </strong> <?php echo $siniestro['direccion']; ?><br>
@@ -54,8 +57,8 @@
     <ul>
         <?php foreach($historial as $h): ?>
             <li>
-                <strong><?php echo $h->estatus_id; ?></strong> 
-                <small><?php echo $h->fecha_actu; ?></small>
+                <strong><?php echo $h->Estatus_Nuevo; ?></strong> 
+                <small><?php echo $h->Fecha_Cambio; ?></small>
             </li>
         <?php endforeach; ?>
     </ul>
@@ -69,17 +72,15 @@
             <input type="hidden" name="id_siniestro" value="<?php echo $siniestro['id']; ?>">
             
             <label>Nuevo Estatus:</label>
-            <select name="estatus" required>
-                <option value="En Evaluación">En Evaluación</option>
-                <option value="Aprobado">Aprobado</option>
-                <option value="Rechazado">Rechazado</option>
-                <option value="Pago en Proceso">Pago en Proceso</option>
-                <option value="Cerrado">Cerrado</option>
+            <select name="nuevo_estatus" id="nuevo_estatus" class="form-control">
+                <option value="">Seleccione un Estatus</option>
+                <?php foreach ($listaEstatus as $estatusItem): ?>
+                    <option value="<?php echo $estatusItem['id']; ?>" 
+                        <?php echo ($siniestro['Estatus'] === $estatusItem['nombre']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($estatusItem['nombre']); ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
-            <br>
-            
-            <label>Comentario o Justificación:</label><br>
-            <textarea name="comentario" rows="3" required placeholder="Motivo del cambio..."></textarea>
             <br>
             
             <button type="submit">Guardar Cambio</button>
@@ -93,44 +94,99 @@
 <!--Aqui por medio del controlador se activa o desactiva lo siguiente-->
 
 
-  <?php if ($_SESSION['rol_slug'] === 'ajustador' || $_SESSION['rol_slug'] === 'supervisor'): ?>
-        <h2>Evaluación del Ajustador</h2>
-        <section>
-            <form action="index.php?page=guardarEvaluacion" method="POST" enctype="multipart/form-data">
+<?php if ($_SESSION['rol_slug'] === 'ajustador' || $_SESSION['rol_slug'] === 'supervisor'): ?>
+    <h2>Evaluación del Ajustador</h2>
+    <section class="card-evaluacion" style="border: 1px solid #ccc; padding: 20px; margin-bottom: 20px;">
+        
+        <?php if (empty($siniestro['diagnostico'])): ?>
+            <form action="index.php?page=guardarEvaluacion" method="POST">
                 <input type="hidden" name="id_siniestro" value="<?php echo $siniestro['id']; ?>">
                 
-                <label>Diagnóstico preliminar</label>
-                <textarea name="diagnostico" required></textarea>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label style="display:block; margin-bottom: 5px; font-weight:bold;">Diagnóstico Preliminar</label>
+                    <textarea name="diagnostico" required class="form-control" style="width:100%; height:100px;"></textarea>
+                </div>
                 
-                <button type="submit" name="btnEvaluacion">Guardar evaluación</button>
+                <button type="submit" name="btnEvaluacion" class="btn-pro">Guardar evaluación</button>
             </form>
-        </section>
-    <?php endif; ?>
 
-<!-- OTRA VERSION DE LA EVALUACION DEL FORMULARIO (de seguro esto se irá)-->
-<!--
-    <h2>Evaluación del Ajustador</h2>
-    <section>
-        <form action="index.php?page=" method="POST" enctype="multipart/form-data" class="form-ajustador">
+        <?php else: ?>
+            <div class="diagnostico-guardado" style="margin-bottom: 20px;">
+                <p><strong>Diagnóstico Registrado:</strong></p>
+                <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #007bff; font-style: italic;">
+                    <?php echo nl2br(htmlspecialchars($siniestro['diagnostico'])); ?>
+                </div>
+            </div>
 
-            <label>Diagnóstico pollo</label>
-            <textarea name="diagnostico" rows="4" required></textarea>
-            
-            <label>Monto estimado de daños ($)</label>
-            <input type="number" name="monto" step="0.01" required>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
-            <br>
+            <div class="subir-evidencias">
+                <p><strong>📂 Subir Nuevas Evidencias al Caso</strong></p>
+                <form action="index.php?page=subirEvidenciaAdicional" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="id_siniestro" value="<?php echo $siniestro['id']; ?>">
+                    
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom: 5px;">Seleccione archivos (Fotos/Videos):</label>
+                        <input type="file" name="archivos_evidencia[]" multiple accept="image/*,video/*" required id="js_input_evidencia">
+                    </div>
+                    
+                    <div id="js_preview_container" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+                    
+                    <button type="submit" name="btnSubirEvidencia" class="btn-pro" style="margin-top:10px;">Cargar Evidencias</button>
+                </form>
+            </div>
+        <?php endif; ?>
 
-            <label>Estado del siniestro</label>
-            <select name="estatus" required>
-                <option value="En proceso"></option>
-            </select>
-            <br>
-
-            <label>Evidencia del siniestro</label>
-            <input type="file" name="evidencias[]" multiple accept="image/*, video/*">
-
-            <button type="submit" name="btnEvaluacion">Guardar evaluación</button>
-        </form>
     </section>
-    -->
+<?php endif; ?>
+
+
+<script>
+document.getElementById('js_input_evidencia').addEventListener('change', function(event) {
+    const contenedor = document.getElementById('js_preview_container');
+    contenedor.innerHTML = ''; 
+    const archivos = event.target.files;
+    
+    for (let i = 0; i < archivos.length; i++) {
+        const file = archivos[i];
+        
+  
+        if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+            alert('¡Error! El archivo "' + file.name + '" no es una imagen ni un video permitido.');
+            event.target.value = ''; 
+            contenedor.innerHTML = '';
+            return;
+        }
+        
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const wrapper = document.createElement('div');
+            wrapper.style.width = '100px';
+            wrapper.style.height = '100px';
+            wrapper.style.border = '1px solid #ddd';
+            wrapper.style.overflow = 'hidden';
+            
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                wrapper.appendChild(img);
+            } else if (file.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = e.target.result;
+                video.style.width = '100%';
+                video.style.height = '100%';
+                video.style.objectFit = 'cover';
+                video.muted = true;
+                wrapper.appendChild(video);
+            }
+            
+            contenedor.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>

@@ -60,7 +60,7 @@
         }
 */
 
-    public function obtenerSiniestrosPorRol($idUsuario, $rolSlug) {
+        public function obtenerSiniestrosPorRol($idUsuario, $rolSlug) {
             $this->_db->conectar();
             
             //es una vista planeada para traer todos esos datos, por eso el *
@@ -138,7 +138,8 @@
         public function getHistorialEstatus($idSiniestro) {
             $this->_db->conectar();
      
-            $sql = "SELECT estatus_id, fecha_actu FROM historialestatus WHERE siniestro_id = ? ORDER BY fecha_actu DESC";
+            $sql="Select * From vHistorialEstatus where siniestro_id = ? ";
+            //$sql = "SELECT estatus_id, fecha_actu FROM historialestatus WHERE siniestro_id = ? ORDER BY fecha_actu DESC";
             $stmt = $this->_db->conexion->prepare($sql);
             $stmt->execute([$idSiniestro]);
             
@@ -146,33 +147,59 @@
             $this->_db->desconectar();
             return $resultados;
         }
-/*
-        public function cambiarEstatus($idSiniestro, $nuevoEstatus) {
+        
+    
+
+        public function obtenerTodosEstatus() {
             $this->_db->conectar();
+            $sql = "SELECT id, nombre FROM estatus";
+            $stmt = $this->_db->conexion->prepare($sql);
+            $stmt->execute();
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $this->_db->desconectar();
+            return $resultados;
+        }
+
+        
+        public function getDashboardAdmin() {
+            $this->_db->conectar();
+            $datos = [];
             
-            try {
-                $this->_db->conexion->beginTransaction();
-
-                // 1. Actualizar el estatus actual en la tabla principal de siniestros (si tienes esa columna)
-                $sql1 = "UPDATE siniestro SET estatus = ? WHERE id = ?";
-                $stmt1 = $this->_db->conexion->prepare($sql1);
-                $stmt1->execute([$nuevoEstatus, $idSiniestro]);
-
-                // 2. Insertar el registro en la bitácora
-                $sql2 = "INSERT INTO historial_estatus (siniestro_id, estatus, comentario, usuario_id) VALUES (?, ?, ?, ?)";
-                $stmt2 = $this->_db->conexion->prepare($sql2);
-                $stmt2->execute([$idSiniestro, $nuevoEstatus, $comentario, $idUsuario]);
-
-                $this->_db->conexion->commit();
-                $resultado = true;
-            } catch (Exception $e) {
-                $this->_db->conexion->rollBack();
-                $resultado = false;
-            }
+        
+            $stmt1 = $this->_db->conexion->query("SELECT * FROM vDashboardAdmin");
+            $datos['resumen_estatus'] = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+            
+        
+            $stmt2 = $this->_db->conexion->query("SELECT * FROM vListarAjustadores");
+            $datos['ajustadores'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+            
+        
+            $stmt3 = $this->_db->conexion->query("SELECT * FROM vListarClientes LIMIT 10");
+            $datos['clientes'] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
 
             $this->_db->desconectar();
+            return $datos;
+        }
+
+        public function actualizarDiagnostico($idSiniestro, $diagnostico) {
+            $this->_db->conectar();
+            
+            $sql = "UPDATE siniestro SET descripcion = ? WHERE id = ?"; 
+            $stmt = $this->_db->conexion->prepare($sql);
+            $resultado = $stmt->execute([$diagnostico, $idSiniestro]);
+            $this->_db->desconectar();
             return $resultado;
-        }*/
+        }
+
+
+        public function cambiarEstatus($idSiniestro, $nuevoEstatus) {
+            $this->_db->conectar();
+            $sql = "UPDATE siniestro SET estatus_id = ? WHERE id = ?";
+            $stmt = $this->_db->conexion->prepare($sql);
+            $resultado = $stmt->execute([$nuevoEstatus, $idSiniestro]);
+            $this->_db->desconectar();
+            return $resultado;
+        }
 
     }   
 ?>

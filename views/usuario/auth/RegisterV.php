@@ -1,6 +1,7 @@
 <div>
     <div>   
         <form action="<?php echo urlsite?>?page=sigInAuth" method="post" enctype="multipart/form-data">
+
             <label for="">Nombre(s)</label>
             <input type="text" class="form-control" name="txtNombres">
 
@@ -38,7 +39,8 @@
             <input type="password" class="form-control" name="txtPassword_Confirm">
                 
             <label>Foto de perfil</label>
-            <input type="file" name="foto_perfil" accept="image/*">
+            <input type="file" id="foto_input" name="foto_perfil" accept="image/*"> 
+            <img id="foto_preview" src="" style="display:none; max-width: 200px; margin-top: 10px; border-radius: 50%;">
                 
             <br>
             <input type ="submit" class="btn btn-primary" value="Registrarse" name="btnSigIn">
@@ -47,3 +49,18 @@
             
     </div>
 </div>
+
+<script>
+    document.getElementById('foto_input').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('foto_preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block'; // Muestra la imagen
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
