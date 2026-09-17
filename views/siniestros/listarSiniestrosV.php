@@ -1,6 +1,6 @@
 <h1>Siniestros</h1>
 
-<div>
+<div classs="contenedor-multiple">
 
     <?php if (empty($misSiniestros)): ?>
         <p>Aún no tiene siniestros.</p>
@@ -8,8 +8,8 @@
         
         foreach($misSiniestros as $siniestro): 
     ?>
-
-        <div>
+    <div class="P-S-individual">
+    
             <div>
                 <p>
                     <strong>Póliza:</strong> <?php echo $siniestro->Poliza; ?><br>
@@ -23,17 +23,17 @@
                 </p>
             </div>
 
-            <div>
+            <div class="acciones">
                 <div>
                     <p><strong>Estatus:</strong></p>
                     <?php echo $siniestro->Estatus; ?>
                 </div>
 
-                <a href="<?php echo urlsite?>?page=detalle&id=<?php echo $siniestro-> id;?>">
+                <a class="vermas" href="<?php echo urlsite?>?page=detalle&id=<?php echo $siniestro-> id;?>">
                     Ver más
                 </a>
             </div>
-        </div>
+    </div>
 
     <?php  endforeach;
         endif;
