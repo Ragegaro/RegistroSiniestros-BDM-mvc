@@ -1,0 +1,30 @@
+flowchart LR
+    proyecto["RegistroSiniestros"]
+    entrada["Entrada"]
+    mvc["MVC"]
+    apoyo["Apoyo"]
+    datos["Datos"]
+    inicio["index.php"]
+    config["config.php"]
+    controladores["controllers/"]
+    modelos["models/"]
+    vistas["views/"]
+    librerias["lib/"]
+    recursos["assets/"]
+    pruebas["pruebas/"]
+    sql["z database/"]
+    archivos["uploads/"]
+    proyecto --> entrada
+    proyecto --> mvc
+    proyecto --> apoyo
+    proyecto --> datos
+    entrada --> inicio
+    entrada --> config
+    mvc --> controladores
+    mvc --> modelos
+    mvc --> vistas
+    apoyo --> librerias
+    apoyo --> recursos
+    apoyo --> pruebas
+    datos --> sql
+    datos --> archivos
