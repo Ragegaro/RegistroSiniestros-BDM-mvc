@@ -2,94 +2,16 @@
 
 [Volver al README](../README.md) · [Referencia técnica](REFERENCIA_TECNICA.md)
 
-Las rutas de este documento son relativas a la carpeta `RegistroSiniestros`. El inventario describe el contenido del proyecto final recibido; añadir estos documentos no modifica sus controladores, modelos, vistas o base de datos.
+Las rutas de este documento son relativas a la carpeta `RegistroSiniestros`. El inventario incluye la funcionalidad de registro de pólizas del asegurado.
 
-## 1. Diagrama de estructura
-
-![Jerarquía del proyecto](diagramas/estructura.png)
-
-El diagrama agrupa los elementos por responsabilidad. **Entrada**, **MVC**, **Apoyo** y **Datos** son categorías explicativas: no son directorios que deban crearse. Las carpetas reales son las indicadas con `/`.
-
-```mermaid
-flowchart LR
-    proyecto["RegistroSiniestros"]
-    entrada["Entrada"]
-    mvc["MVC"]
-    apoyo["Apoyo"]
-    datos["Datos"]
-    inicio["index.php"]
-    config["config.php"]
-    controladores["controllers/"]
-    modelos["models/"]
-    vistas["views/"]
-    librerias["lib/"]
-    recursos["assets/"]
-    pruebas["pruebas/"]
-    sql["z database/"]
-    archivos["uploads/"]
-    proyecto --> entrada
-    proyecto --> mvc
-    proyecto --> apoyo
-    proyecto --> datos
-    entrada --> inicio
-    entrada --> config
-    mvc --> controladores
-    mvc --> modelos
-    mvc --> vistas
-    apoyo --> librerias
-    apoyo --> recursos
-    apoyo --> pruebas
-    datos --> sql
-    datos --> archivos
-```
-
-Fuente editable independiente: `diagramas/estructura.mmd`. Imagen vectorial: `diagramas/estructura.svg`. Versión rasterizada: `diagramas/estructura.png`.
-
-## 2. Flujo MVC
-
-![Flujo de solicitudes y respuestas](diagramas/arquitectura_mvc.png)
-
-```mermaid
-flowchart TB
-    peticion["Petición del navegador"]
-    entrada["index.php"]
-    controlador["Controlador"]
-    modelo["Modelo"]
-    conexion["Conexion y PDO"]
-    base[("bdm_aseguradora")]
-    vista["Vista PHP"]
-    directa["JSON o multimedia"]
-    respuesta["Respuesta al navegador"]
-    comunes["lib/"]
-    peticion --> entrada
-    entrada --> controlador
-    controlador <--> modelo
-    modelo <--> conexion
-    conexion <--> base
-    controlador --> vista
-    controlador --> directa
-    vista --> respuesta
-    directa --> respuesta
-    comunes -.-> controlador
-    comunes -.-> modelo
-```
-
-1. El navegador solicita una ruta de `index.php`, normalmente mediante `page`.
-2. El archivo de entrada carga configuración, sesión y tratamiento de errores.
-3. El controlador aplica las comprobaciones de la operación y solicita datos al modelo.
-4. El modelo accede a la base mediante `Conexion` y PDO.
-5. El controlador puede cargar una vista HTML, responder JSON para el chat o transmitir una evidencia.
-
-Las líneas discontinuas representan dependencias de utilidades. Las flechas de doble sentido representan consultas/operaciones y devolución de resultados; no constituyen una segunda ruta HTTP.
-
-## 3. Archivos de entrada
+## 1. Archivos de entrada
 
 | Ruta | Función |
 | --- | --- |
 | `index.php` | Enrutador principal; carga configuración, sesión, avisos y controlador según `page` |
 | `config.php` | Parámetros de conexión y cálculo de la URL base |
 
-## 4. Controladores
+## 2. Controladores
 
 Los subdirectorios de `controllers` organizan los módulos por dominio.
 
@@ -97,21 +19,21 @@ Los subdirectorios de `controllers` organizan los módulos por dominio.
 | --- | --- |
 | `controllers/usuario/UsuarioC.php` | Acceso, registro, cierre de sesión, panel según rol y edición del perfil |
 | `controllers/usuario/RolC.php` | Archivo vacío; no implementa administración de roles |
-| `controllers/poliza/PolizaC.php` | Lista las pólizas de la cuenta; el bloque de alta comentado no está activo |
+| `controllers/poliza/PolizaC.php` | Lista y registra las pólizas del asegurado; validación de formulario y permisos |
 | `controllers/poliza/AutoC.php` | Recibe el formulario y registra un vehículo |
 | `controllers/poliza/AseguradoraC.php` | Archivo vacío; no implementa administración de aseguradoras |
 | `controllers/siniestro/SiniestroC.php` | Reporte, listados, detalle, evaluación, estatus, asignaciones y primera carga del chat |
 | `controllers/siniestro/MultimediaC.php` | Entrega autenticada de evidencias y mantenimiento de videos antiguos |
 | `controllers/siniestro/ChatC.php` | Lectura/envío del chat, parámetros, sesión, CSRF, errores JSON o redirección |
 
-## 5. Modelos
+## 3. Modelos
 
 | Ruta | Responsabilidad y estado |
 | --- | --- |
 | `models/Conexion.php` | Construye el DSN, crea PDO y proporciona la reversión segura de transacciones |
 | `models/usuario/UsuarioM.php` | Registro e inicio de sesión por procedimientos; lectura y actualización de perfil; consultas de resumen |
 | `models/usuario/RolM.php` | Archivo vacío |
-| `models/poliza/PolizaM.php` | Consulta pólizas por usuario y contiene el método para llamar al alta SQL de póliza |
+| `models/poliza/PolizaM.php` | Consulta pólizas, aseguradoras y vehículos propios; alta transaccional de póliza y vehículo |
 | `models/poliza/AutoM.php` | Inserta vehículos; conserva métodos vacíos que no constituyen un CRUD completo |
 | `models/siniestro/SiniestroM.php` | Reportes con evidencias, asignación, permisos de listado, evaluación, historial y resumen del supervisor |
 | `models/siniestro/MultimediaM.php` | Escritura LONGBLOB, metadatos, lectura por bloques, límite de paquetes y conversión heredada |
@@ -119,7 +41,7 @@ Los subdirectorios de `controllers` organizan los módulos por dominio.
 
 El panel de supervisión utiliza `SiniestroM::getDashboardAdmin()`. También existe un método de resumen en `UsuarioM`, pero no es el que invoca ese panel en la ruta actual.
 
-## 6. Vistas
+## 4. Vistas
 
 ### Componentes compartidos
 
@@ -148,6 +70,7 @@ El panel de supervisión utiliza `SiniestroM::getDashboardAdmin()`. También exi
 | Ruta | Función |
 | --- | --- |
 | `views/polizas/polizasV.php` | Listado de pólizas relacionadas con la cuenta |
+| `views/polizas/agregarPolizaV.php` | Formulario de póliza, compañía y vehículo nuevo o propio |
 | `views/polizas/autos/agregarAutoV.php` | Formulario de registro de vehículo |
 
 ### Siniestros y conversación
@@ -165,7 +88,7 @@ El panel de supervisión utiliza `SiniestroM::getDashboardAdmin()`. También exi
 | `views/siniestros/chat/mensaje.php` | Mensaje individual con autor, rol y fecha; contenido escapado |
 | `views/siniestros/tiposSiniestroV(Obsoleto)).php` | Vista antigua, fuera del enrutamiento principal |
 
-## 7. Utilidades compartidas
+## 6. Utilidades compartidas
 
 | Ruta | Función |
 | --- | --- |
@@ -174,7 +97,7 @@ El panel de supervisión utiliza `SiniestroM::getDashboardAdmin()`. También exi
 | `lib/Archivos.php` | Límites y MIME, cargas válidas, rutas antiguas restringidas y rangos HTTP |
 | `lib/ChatReglas.php` | Validación de mensajes, permisos del actor y etiquetas de roles del chat |
 
-## 8. Recursos del cliente
+## 7. Recursos del cliente
 
 | Ruta | Función |
 | --- | --- |
@@ -184,10 +107,11 @@ El panel de supervisión utiliza `SiniestroM::getDashboardAdmin()`. También exi
 | `assets/js/script.js` | Cierre de avisos y navegación móvil |
 | `assets/js/preview.js` | Vista previa de las evidencias seleccionadas |
 | `assets/js/chat.js` | Sondeo, envío, páginas anteriores, errores y bloqueo ante pérdida de acceso |
+| `assets/js/polizas.js` | Muestra y valida los campos según la aseguradora y el vehículo seleccionados |
 | `assets/js/dev-reload.js` | Recarga automática para desarrollo; `DEV_RELOAD` está desactivado |
 | `assets/img/Logfamily.jpg` | Recurso gráfico incluido en el proyecto |
 
-## 9. Pruebas incluidas
+## 8. Pruebas incluidas
 
 | Ruta | Cobertura principal |
 | --- | --- |
@@ -195,10 +119,11 @@ El panel de supervisión utiliza `SiniestroM::getDashboardAdmin()`. También exi
 | `pruebas/avisos.php` | Avisos de sesión y presentación segura de errores |
 | `pruebas/chat.php` | Reglas de acceso, validación Unicode y salida HTML del chat |
 | `pruebas/chat-cliente.cjs` | Cliente JavaScript con DOM y respuestas simulados |
+| `pruebas/polizas-cliente.cjs` | Comprueba campos visibles, requeridos y deshabilitados en el formulario de pólizas |
 
 Los scripts PHP se ejecutan por CLI. El archivo CJS usa Node.js y no convierte a Node en una dependencia del servidor web.
 
-## 10. SQL y archivos de datos
+## 9. SQL y archivos de datos
 
 | Ruta | Uso y precauciones |
 | --- | --- |
@@ -214,15 +139,3 @@ Los scripts PHP se ejecutan por CLI. El archivo CJS usa Node.js y no convierte a
 | `z database/base de datos(Obsoleto).sql` | Material antiguo; no usar como instalador |
 | `base de datos v2 agregar historial estatus.png` | Imagen de referencia incluida; el esquema vigente se comprueba en el SQL principal |
 | `uploads/siniestros/SIN-3/video_6aac7967656f55.61944886.mp4` | Video local heredado incluido; no es un respaldo de todos los BLOB de la base |
-
-El archivo del diccionario contiene una consulta a `DICCIONARIO` antes de su creación. La vista no forma parte de `instalacion_completa.sql`; por eso ese archivo no debe tratarse como un paso obligatorio ni ejecutarse a ciegas sobre una base nueva.
-
-Las rutas antiguas de `uploads` se mantienen para compatibilidad y respaldo. Las evidencias nuevas se almacenan en la base; no se genera un archivo por cada nuevo BLOB en esa carpeta.
-
-## 11. Cómo añadir esta documentación
-
-Coloca `README.md` al lado de `index.php` y copia la carpeta `docs` al mismo nivel. Sus rutas relativas permiten consultar las imágenes y los documentos sin modificar la aplicación.
-
-Los `.mmd` son fuentes Mermaid; los `.dot` describen las versiones renderizadas con Graphviz. Ambos representan los mismos nodos y relaciones. Los SVG permiten ampliar sin perder nitidez y los PNG pueden insertarse en presentaciones.
-
-No es necesario subir estos documentos a una tabla de la base ni añadir nuevas rutas de PHP.

@@ -34,6 +34,15 @@ class SiniestroC {
         $misPolizas = is_array($misPolizas) ? $misPolizas : [];
         $anterior = $_SESSION['reporte_anterior'] ?? [];
         unset($_SESSION['error_reporte'], $_SESSION['reporte_anterior']);
+        if (empty($anterior) && isset($_GET['poliza'])) {
+            $idPreseleccionado = Seguridad::entero($_GET, 'poliza');
+            foreach ($misPolizas as $poliza) {
+                if ((int) $poliza->id === $idPreseleccionado) {
+                    $anterior['SelectPoliza'] = $idPreseleccionado;
+                    break;
+                }
+            }
+        }
 
         require "views/layouts/header.php";
         require "views/layouts/navbar.php";
@@ -158,21 +167,24 @@ class SiniestroC {
     public function actualizarEstatus() {
         $this->exigirSesion();
         $rol = $_SESSION['rol_slug'] ?? '';
-        if (!in_array($rol, ['supervisor', 'admin'], true) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if (!in_array($rol, ['ajustador', 'supervisor', 'admin'], true) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: index.php?page=misSiniestros");
             exit;
         }
         Seguridad::exigirPost();
 
-        $idSiniestro = isset($_POST['id_siniestro']) ? (int) $_POST['id_siniestro'] : 0;
-        $idEstatus = isset($_POST['estatus_id']) ? (int) $_POST['estatus_id'] : 0;
+        $idSiniestro = Seguridad::entero($_POST, 'id_siniestro');
+        $idEstatus = Seguridad::entero($_POST, 'estatus_id');
 
         if ($idSiniestro <= 0 || $idEstatus <= 0) {
             Avisos::ir('misSiniestros', 'error', 'Selecciona un siniestro y un estatus válidos.');
         }
 
         try {
-            $resultado = $this->modelo->cambiarEstatus($idSiniestro, $idEstatus);
+            // El modelo comprueba la asignación otra vez dentro de la transacción.
+            $resultado = $this->modelo->cambiarEstatus(
+                $idSiniestro, $idEstatus, (int) $_SESSION['id_usuario'], $rol
+            );
             Avisos::ir('detalle', $resultado ? 'success' : 'error', $resultado ? 'Estatus actualizado correctamente.' : 'No se pudo actualizar el estatus.', ['id' => $idSiniestro]);
         } catch (Throwable $e) {
             Avisos::ir('detalle', 'error', Avisos::registrarError($e, 'actualizar el estatus'), ['id' => $idSiniestro]);

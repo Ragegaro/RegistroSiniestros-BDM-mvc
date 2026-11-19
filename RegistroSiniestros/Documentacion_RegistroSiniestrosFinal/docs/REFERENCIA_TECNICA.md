@@ -36,18 +36,20 @@ El acceso se realiza con alias y contraseña transformada con MD5 en el controla
 | `misSiniestros` | GET | Sesión; filtrado por propietario, asignación o supervisión |
 | `detalle` | GET, `id` | Sesión y relación autorizada con el expediente |
 | `guardarEvaluacion`, `guardarEdicionEvaluacion` | POST | Ajustador asignado o supervisor/admin; CSRF y diagnóstico no vacío |
-| `actualizarEstatus` | POST | Supervisor/admin y CSRF |
+| `actualizarEstatus` | POST | Supervisor/admin o ajustador asignado; CSRF, caso abierto y autorización transaccional |
 | `asignaciones` | GET | Supervisor/admin; `filtro=pendientes` o listado completo |
 | `asignarAjustador` | POST | Supervisor/admin, CSRF, caso no cerrado y ajustador activo |
 | `polizas` | GET | Pólizas de la cuenta con sesión; no consulta global por ser supervisor |
+| `agregarPoliza` | GET | Formulario disponible únicamente para el rol asegurado |
+| `guardarPoliza` | POST | Asegurado, sesión y CSRF; alta atómica de póliza, aseguradora nueva opcional y vehículo nuevo o propio |
 | `agregarAuto` | GET habitual | Carga directamente el formulario de vehículo desde el enrutador |
 | `guardarAuto` | POST | Sesión y CSRF antes del INSERT de vehículo |
 
-El formulario `agregarAuto` se incluye directamente en `index.php` sin una comprobación propia de sesión en esa rama; el guardado sí exige sesión y CSRF. Se documenta el comportamiento del código, no un permiso adicional supuesto.
+El formulario `agregarAuto` se incluye directamente en `index.php`
 
 La asignación usa `id_siniestro`, `ajustador_id` y, opcionalmente, `volver`. Un `ajustador_id` igual a `0` retira la asignación. `volver=detalle` regresa al expediente; el otro destino previsto es el listado de asignaciones.
 
-El estado **Cerrado** impide reasignar en el modelo. La vista también oculta determinados formularios al cerrar, pero `guardarEvaluacion` y `actualizarEstatus` no implementan una restricción equivalente por estado cerrado en el servidor. No debe confundirse ocultar un formulario con impedir cualquier POST directo.
+El estado **Cerrado** impide reasignar en el modelo. La vista también oculta determinados formularios al cerrar
 
 ## 4. Rutas de multimedia
 
@@ -56,10 +58,6 @@ El estado **Cerrado** impide reasignar en el modelo. La vista también oculta de
 | `evidencia` | GET o HEAD, `id` | Contenido binario autorizado, con tipo MIME detectado |
 | `migrarVideos` | GET | Pantalla de mantenimiento de supervisor/admin, sin enlace en el menú |
 | `migrarVideos` | POST | Conversión de `id_multimedia` con CSRF |
-
-Las evidencias verifican propietario, ajustador asignado o supervisor/admin antes de servir el archivo. Se admite un rango de bytes por petición. Las respuestas pueden ser `200` para contenido completo, `206` para contenido parcial, `416` para rango inválido o estados de error de acceso/formato. No se incrusta el video completo como base64 en la página.
-
-Las cargas nuevas usan `PDO::PARAM_LOB`, guardan `archivo` y dejan `ruta` en NULL. Para un registro antiguo sin BLOB, se permite una ruta válida dentro de `uploads/siniestros`. La conversión conserva la ruta y el archivo original, y verifica longitud y SHA-256 antes de confirmar.
 
 ## 5. API del chat
 
@@ -103,8 +101,6 @@ Con `Accept: application/json`, el éxito responde `201` y un objeto con `ok` e 
 
 Cada lectura/envío abre una transacción y consulta el responsable actual, el propietario de la póliza y el rol/estado del actor. El bloqueo inicial de `siniestro` coordina estas operaciones con la reasignación. El chat se guarda como conversación lineal: `mensaje_padre` queda NULL, aunque la columna permite una relación de respuesta a nivel de esquema.
 
-No hay idempotencia persistente de envío: el cliente bloquea dobles clics, pero un reintento manual después de perder una respuesta podría repetir un mensaje. Por ello no reenvía automáticamente.
-
 ## 6. Tablas de la base de datos
 
 El instalador principal define **11 tablas**. Todas usan `id` como clave primaria autoincremental.
@@ -132,8 +128,6 @@ El instalador principal define **11 tablas**. Todas usan `id` como clave primari
 - Un siniestro puede tener muchas evidencias, mensajes y entradas de historial, pero como máximo una evaluación.
 - Cada mensaje conserva su autor y su siniestro, independientemente de reasignaciones posteriores.
 
-Las claves foráneas no declaran borrado en cascada en el instalador incluido. La aplicación tampoco ofrece eliminación general de expedientes como parte de su flujo habitual.
-
 ### Campos de multimedia y chat
 
 | Campo | Tipo SQL | Uso |
@@ -148,7 +142,6 @@ Las claves foráneas no declaran borrado en cascada en el instalador incluido. L
 | `chat.usuario_id` | `INT UNSIGNED NOT NULL` | Emisor autenticado |
 | `chat.mensaje_padre` | `INT UNSIGNED NULL` | Relación opcional, no usada por la conversación lineal actual |
 
-Este resumen no sustituye un diccionario exhaustivo de todas las columnas. Los tipos, restricciones y valores predeterminados completos están en `instalacion_completa.sql`; las consultas del archivo `DD y diagrama SQL.sql` permiten inspeccionar metadatos de la base instalada.
 
 ## 7. Procedimientos almacenados
 
@@ -157,12 +150,12 @@ Este resumen no sustituye un diccionario exhaustivo de todas las columnas. Los t
 | `sp_validar_usuario` | Busca alias/contraseña de una cuenta activa y devuelve su rol | Inicio de sesión |
 | `sp_registrar_usuario` | Inserta un usuario con el rol localizado por slug `asegurado` | Registro público |
 | `sp_verPoliza` | Consulta pólizas de un usuario mediante `vPolizas` | Listado y formulario de reporte |
-| `sp_InsertarPoliza` | Inserta una relación de póliza | Método del modelo existente; sin ruta de alta activa |
+| `sp_InsertarPoliza` | Inserta una relación de póliza | Procedimiento heredado; el registro del asegurado ahora usa transacción PDO en `PolizaM` |
 | `sp_listar_usuarios` | Consulta datos básicos de usuarios | Definido en SQL; sin pantalla administrativa conectada |
 | `sp_eliminar_usuario` | Cambia `estatus` a 0; no borra la fila | Definido en SQL; sin ruta de baja activa |
 
 El chat, las evidencias y la gestión actual de siniestros utilizan consultas preparadas de los modelos, sin procedimientos nuevos dedicados al chat.
-
+_Ya me dolió la mano_
 ## 8. Vistas SQL
 
 | Vista | Datos que presenta |
@@ -176,15 +169,13 @@ El chat, las evidencias y la gestión actual de siniestros utilizan consultas pr
 | `vBusquedaAvanzada` | Datos para búsqueda; sin pantalla activa conectada en esta versión |
 | `vDashboardAdmin` | Totales de siniestros por estatus |
 
-La vista `DICCIONARIO` aparece en un archivo SQL auxiliar, no en el instalador principal. Si no existe en la base, una consulta a ella fallará hasta que se cree explícitamente. La documentación del proyecto permanece en archivos Markdown; no se carga en MySQL como parte de la instalación.
-
 ## 9. Transacciones y reglas de negocio
 
 | Operación | Regla implementada |
 | --- | --- |
 | Crear reporte | La póliza pertenece al usuario; reporte y evidencias se confirman juntos |
 | Asignar responsable | Caso existente no cerrado; usuario activo con rol ajustador; se bloquea el caso durante el cambio |
-| Cambiar estatus | Actualiza el caso y agrega historial solo si el valor cambia |
+| Cambiar estatus | El supervisor administra casos abiertos; el ajustador solo sus casos asignados; rechaza expedientes cerrados y agrega historial solo si cambia |
 | Guardar evaluación | Inserta o actualiza por la clave única de siniestro |
 | Consultar/enviar chat | Autorización actual en SQL dentro de una transacción coordinada con reasignación |
 | Convertir video antiguo | Lee ruta restringida y verifica bytes/huella antes de confirmar |

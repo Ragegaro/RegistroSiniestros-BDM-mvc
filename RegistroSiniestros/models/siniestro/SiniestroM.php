@@ -150,19 +150,41 @@ class SiniestroM {
         return $resultados;
     }
 
-    public function cambiarEstatus($idSiniestro, $idEstatus) {
+    public function cambiarEstatus($idSiniestro, $idEstatus, $idUsuario, $rol) {
         $this->_db->conectar();
         try {
             $this->_db->conexion->beginTransaction();
 
-            $stmtActual = $this->_db->conexion->prepare("SELECT estatus_id FROM siniestro WHERE id = ? FOR UPDATE");
+            $stmtActual = $this->_db->conexion->prepare(
+                "SELECT s.estatus_id, s.ajustador_id, e.nombre AS estatus_nombre
+                 FROM siniestro s LEFT JOIN estatus e ON e.id = s.estatus_id
+                 WHERE s.id = ? FOR UPDATE"
+            );
             $stmtActual->execute([$idSiniestro]);
-            $actual = $stmtActual->fetchColumn();
-            if ($actual === false) {
-                throw new RuntimeException('Siniestro no encontrado');
+            $caso = $stmtActual->fetch(PDO::FETCH_ASSOC);
+            if (!$caso) {
+                throw new RuntimeException('Siniestro no encontrado.');
             }
 
-            if ((string) $actual !== (string) $idEstatus) {
+            $esSupervisor = in_array($rol, ['supervisor', 'admin'], true);
+            $esAjustadorAsignado = $rol === 'ajustador'
+                && (int) $caso['ajustador_id'] === (int) $idUsuario
+                && (int) $idUsuario > 0;
+            if (!$esSupervisor && !$esAjustadorAsignado) {
+                throw new RuntimeException('Solo el ajustador asignado o el supervisor pueden cambiar este estatus.');
+            }
+
+            if (strcasecmp(trim((string) ($caso['estatus_nombre'] ?? '')), 'Cerrado') === 0) {
+                throw new RuntimeException('El siniestro está cerrado y su estatus no puede modificarse.');
+            }
+
+            $stmtEstado = $this->_db->conexion->prepare('SELECT 1 FROM estatus WHERE id = ?');
+            $stmtEstado->execute([$idEstatus]);
+            if (!$stmtEstado->fetchColumn()) {
+                throw new RuntimeException('Selecciona un estatus que exista en el catálogo.');
+            }
+
+            if ((int) $caso['estatus_id'] !== (int) $idEstatus) {
                 $stmt = $this->_db->conexion->prepare("UPDATE siniestro SET estatus_id = ? WHERE id = ?");
                 $stmt->execute([$idEstatus, $idSiniestro]);
 

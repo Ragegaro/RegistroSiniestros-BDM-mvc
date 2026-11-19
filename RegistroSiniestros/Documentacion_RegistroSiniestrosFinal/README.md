@@ -4,7 +4,6 @@ Aplicación web académica para registrar y dar seguimiento a siniestros de veh�
 
 **Área:** Base de Datos Multimedia.  
 **Autoría indicada en la aplicación:** Michelle y Raúl.  
-**Versión documentada:** contenido de `RegistroSiniestrosFinal.rar`.
 
 ## Contenido
 
@@ -29,7 +28,7 @@ El sistema reúne la información del asegurado, su póliza y vehículo, el repo
 Las funciones presentes en esta versión son:
 
 - Registro, inicio y cierre de sesión; edición del perfil y fotografía.
-- Consulta de las pólizas relacionadas con la cuenta.
+- Registro y consulta de pólizas propias, incluyendo un vehículo nuevo o uno previamente asociado a la cuenta.
 - Registro de siniestros con fecha, hora, ubicación, descripción y evidencias opcionales.
 - Listado de expedientes filtrado según el rol y la relación con el caso.
 - Asignación, reasignación o retiro del ajustador por el supervisor.
@@ -47,17 +46,14 @@ La **aseguradora** es la compañía registrada en el catálogo; el **asegurado**
 | --- | --- | --- | --- |
 | Consultar y editar el perfil propio | Sí | Sí | Sí |
 | Consultar pólizas propias | Sí | Solo las vinculadas a su cuenta, si las tiene | Solo las vinculadas a su cuenta, si las tiene |
+| Registrar una póliza y su vehículo | Sí | No | No |
 | Reportar un siniestro | Con una póliza propia | No | No |
 | Consultar expedientes y evidencias | De sus pólizas | De los casos asignados | De todos los casos |
 | Asignar o reasignar ajustador | No | No | Sí, si el caso no está cerrado |
 | Guardar una evaluación | No | En su caso asignado | En cualquier caso accesible |
-| Actualizar estatus | No | No | Sí |
+| Actualizar estatus | No | Sí, únicamente en casos asignados y abiertos | Sí, en casos abiertos |
 | Leer y enviar mensajes | En sus casos | En los casos asignados | En todos los casos |
 | Consultar el resumen de supervisión | No | No | Sí |
-
-El registro público crea una cuenta con rol **asegurado**. El código reconoce `admin` como equivalente de `supervisor`, aunque la instalación SQL crea únicamente los slugs `asegurado`, `ajustador` y `supervisor`.
-
-No hay una pantalla activa para administrar roles ni un formulario completo de alta de pólizas. Las cuentas de ajustador/supervisor y los datos iniciales de las pólizas deben prepararse en la base de datos por el responsable de la instalación. Los números de rol no deben suponerse: la referencia lógica es `rol.slug`.
 
 ## Tecnologías
 
@@ -70,7 +66,6 @@ No hay una pantalla activa para administrar roles ni un formulario completo de a
 | HTML y CSS | Formularios, páginas y diseño adaptable |
 | Bootstrap 4.6 | Hoja de estilos local, complementada por CSS propio |
 | JavaScript nativo | Chat, vista previa de archivos, avisos y navegación móvil |
-| Node.js | Opcional: ejecutar las pruebas del cliente JavaScript |
 
 La aplicación no requiere instalar paquetes con Composer o npm para utilizarse. El chat no necesita un servidor Node.js ni servicios externos.
 
@@ -90,7 +85,7 @@ La aplicación no requiere instalar paquetes con Composer o npm para utilizarse.
 3. Abre phpMyAdmin y comprueba que esté conectado a la misma instancia y puerto que utiliza el proyecto.
 4. Importa **`z database/instalacion_completa.sql`**. El archivo crea `bdm_aseguradora`, sus tablas, vistas, procedimientos y los catálogos básicos de roles y estatus.
 5. Revisa los parámetros de `config.php` y ajusta solo los que correspondan a tu equipo.
-6. Prepara las cuentas y las relaciones de prueba: aseguradora, vehículo, asegurado y póliza. La instalación SQL no incluye las cuentas ni los expedientes de tu XAMPP original.
+6. Registra un asegurado desde la aplicación. Ya puedes crear sus pólizas desde la interfaz: si tu compañía no está en el catálogo, selecciona la opción para escribir su nombre. La instalación SQL no incluye las cuentas ni los expedientes de tu XAMPP original.
 7. Abre [http://localhost/RegistroSiniestros/](http://localhost/RegistroSiniestros/).
 
 No abras `index.php` con doble clic ni mediante `file://`: PHP debe ejecutarse a través de Apache. Si Apache utiliza otro puerto, inclúyelo en la URL del navegador.
@@ -106,20 +101,7 @@ No abras `index.php` con doble clic ni mediante `file://`: PHP debe ejecutarse a
 | `DB_HOST` | `localhost` | Constante existente; el DSN actual usa `DB_HOSTM` |
 | `urlsite` | Calculada con el host y la carpeta de ejecución | Base de las rutas de la aplicación |
 
-El puerto **3307 es el de la base de datos**, no el puerto que se agrega a la dirección web. Los valores `root` y contraseña vacía corresponden al entorno local incluido, no a una configuración para publicar en Internet.
-
-### Conservar o trasladar una instalación existente
-
-Si el proyecto ya funciona, **no vuelvas a importar la instalación completa solamente para añadir esta documentación**. Copia este `README.md` y la carpeta `docs` junto a `index.php`; no necesitas reemplazar código ni ejecutar SQL.
-
-Para mover todo el sistema a otro equipo:
-
-1. Respalda el proyecto y exporta `bdm_aseguradora` con estructura, datos y rutinas desde phpMyAdmin.
-2. Conserva la carpeta `uploads`, por si todavía hay registros que dependan de archivos anteriores.
-3. Importa el respaldo en la nueva instancia y adapta `config.php`.
-4. Verifica las cuentas, pólizas, chats y reproducción de evidencias.
-
-**Importante:** las fotos y videos almacenados como BLOB viajan en el respaldo de la base de datos. El RAR del código no sustituye ese respaldo. El script `instalacion_completa.sql` tampoco contiene los mensajes o videos guardados en una base ya utilizada.
+El puerto **3307 es el de la base de datos**, no el puerto que se agrega a la dirección web.
 
 ## Uso del sistema
 
@@ -127,23 +109,33 @@ Para mover todo el sistema a otro equipo:
 
 Registra una cuenta e inicia sesión con **alias y contraseña**. El parámetro de acceso es el alias, no el correo electrónico. Desde **Mi perfil** se pueden actualizar los datos de acceso y la fotografía.
 
-### 2. Reporte del asegurado
+### 2. Registrar una póliza
+
+Desde el panel del asegurado entra en **Mis pólizas → Registrar póliza**. Captura el número de póliza y selecciona la aseguradora. Si no aparece, elige **Mi aseguradora no aparece en la lista** y escribe el nombre. Luego agrega un vehículo nuevo (marca, modelo, color opcional, placas y número de serie) o reutiliza uno de tus vehículos que ya tenga otra póliza registrada.
+
+Se guardan la póliza y el vehículo en una misma transacción. No hace falta modificar la base de datos existente ni importar una migración: se utilizan las tablas `aseguradoras`, `vehiculo` y `poliza` ya presentes. El usuario se obtiene de la sesión, no del formulario. Solo se pueden reutilizar vehículos previamente vinculados a la cuenta autenticada.
+
+La información se captura de manera declarativa: **el sistema no confirma con la aseguradora si la cobertura es válida o está vigente**.
+
+### 3. Reporte del asegurado
 
 Abre **Reportar siniestro**, selecciona una póliza propia, captura los datos y adjunta las evidencias si corresponde. El reporte y sus archivos se guardan dentro de una transacción: si la operación falla, se revierte el conjunto.
 
-Una cuenta recién registrada puede no tener pólizas. Debe relacionarse una póliza antes de poder reportar un siniestro. Un reporte nuevo no recibe automáticamente un ajustador ni un estatus inicial: puede aparecer como **No Asignado** y **Sin Estatus** hasta que se gestione.
+Una cuenta recién registrada no tiene pólizas. Debe registrar al menos una desde **Mis pólizas** antes de poder reportar un siniestro. Un reporte nuevo no recibe automáticamente un ajustador ni un estatus inicial: puede aparecer como **No Asignado** y **Sin Estatus** hasta que se gestione.
 
-### 3. Asignación del responsable
+### 4. Asignación del responsable
 
 El supervisor entra en **Asignar ajustadores** o en la tarjeta de asignación del expediente. Puede elegir un ajustador activo, sustituirlo o retirar la asignación. No se permite reasignar un caso cuyo estatus sea **Cerrado**.
 
 Al reasignar, el responsable anterior deja de tener acceso en las siguientes comprobaciones. El historial y los mensajes anteriores no se eliminan.
 
-### 4. Evaluación y seguimiento
+### 5. Evaluación y seguimiento
 
 El ajustador asignado consulta el expediente y registra su diagnóstico. El supervisor también puede guardar una evaluación. Existe como máximo una evaluación por siniestro: al volver a guardar se actualiza la existente.
 
-El supervisor modifica el estatus. Si este cambia, se agrega un registro a `historialestatus`. Los estatus del catálogo inicial son: **En Evaluación**, **Aprobado**, **Rechazado**, **Pago en Proceso** y **Cerrado**. Son valores de catálogo; no representan una secuencia obligatoria de transición implementada por el sistema.
+El supervisor puede modificar el estatus de los siniestros abiertos. El **ajustador** también puede modificarlo, pero únicamente en los siniestros asignados a su cuenta. El permiso se comprueba en la transacción SQL para impedir cambios ajenos aunque se altere el formulario. Un expediente **Cerrado** no puede reabrirse desde este control.
+
+Si el estatus cambia, se agrega un registro a `historialestatus`. Los estatus del catálogo inicial son: **En Evaluación**, **Aprobado**, **Rechazado**, **Pago en Proceso** y **Cerrado**. Son valores de catálogo; no representan una secuencia obligatoria de transición implementada por el sistema.
 
 ## Chat por siniestro
 
@@ -160,7 +152,6 @@ Se abre desde **Siniestros → Abrir chat del siniestro** o dentro del detalle d
 - Enter crea otra línea; Ctrl+Enter envía. También se puede usar el botón de envío.
 - Sin JavaScript, el formulario funciona con recarga de página.
 
-Una denegación de acceso cierra el chat visible y bloquea el envío. Esto no retira mensajes que una persona ya leyó o copió cuando todavía estaba autorizada.
 
 Si la conexión falla, el borrador se conserva en la pestaña. Los mensajes no se reenvían automáticamente: si un envío no se confirmó, revisa si apareció antes de volver a enviarlo. El chat es de texto; no incluye adjuntos, edición o eliminación de mensajes.
 
@@ -179,7 +170,7 @@ Las fotografías y los videos nuevos se guardan en **`multimedia.archivo` de tip
 
 Los avisos de la interfaz utilizan la abreviatura MB para estos límites binarios. Fileinfo verifica el tipo real del archivo; el sistema no se basa únicamente en su extensión.
 
-Las evidencias se entregan por `index.php?page=evidencia&id=ID` después de verificar permisos. La reproducción de video admite rangos HTTP para avanzar o retroceder. El almacenamiento en BLOB **no convierte el códec**: un formato que puede guardarse podría no reproducirse en todos los navegadores.
+Las evidencias se entregan por `index.php?page=evidencia&id=ID` después de verificar permisos. La reproducción de video admite rangos HTTP para avanzar o retroceder. El almacenamiento en BLOB.
 
 ### Límites del servidor
 
@@ -200,10 +191,6 @@ max_allowed_packet = 64M
 
 Conserva el resto de la configuración y reinicia el servicio correspondiente si haces cambios. Un `LONGBLOB` no elimina los límites de PHP o del servidor de base de datos.
 
-### Mantenimiento de videos anteriores
-
-El conversor no aparece en el menú normal. Se conserva, restringido a supervisor/admin, en `index.php?page=migrarVideos`. Permite convertir archivos antiguos de `uploads/siniestros`, comprobar tamaño y SHA-256 y conservar el original como respaldo. No es una pantalla necesaria para el uso diario del sistema.
-
 ## Arquitectura y estructura
 
 El proyecto utiliza una organización **Modelo–Vista–Controlador (MVC)**. `index.php` recibe el parámetro `page`, carga la configuración y dirige la petición al controlador correspondiente. Los modelos consultan la base mediante `Conexion`; los controladores preparan los datos y cargan las vistas o producen una respuesta JSON/binaria.
@@ -223,31 +210,16 @@ La implementación contiene controles de acceso a expedientes, consultas prepara
 Los errores visibles se muestran en la página; los parámetros normales de navegación como `page`, `id` o `filtro` permanecen en la URL. Las excepciones capturadas no imprimen consultas completas ni trazas al usuario.
 
 
-## Pruebas
-
-Desde una terminal, situado en la carpeta del proyecto:
-
-```bat
-cd C:\xampp\htdocs\RegistroSiniestros
-C:\xampp\php\php.exe pruebas\reglas.php
-C:\xampp\php\php.exe pruebas\avisos.php
-C:\xampp\php\php.exe pruebas\chat.php
-```
-
-Estas pruebas PHP no necesitan conexión a la base. Para el cliente JavaScript, si tienes Node.js:
-
-```sh
-node pruebas/chat-cliente.cjs
-```
-
-Al preparar esta documentación se ejecutó la prueba JavaScript del archivo final y pasaron **10 escenarios simulados**. Las pruebas PHP y la integración con MySQL no se ejecutaron en este entorno; deben comprobarse en XAMPP. No se modificó el código funcional para esta entrega documental.
-
 ### Comprobación funcional sugerida
 
 | Prueba | Resultado esperado |
 | --- | --- |
 | Acceso con alias y contraseña correctos | Panel correspondiente al rol |
 | Credenciales incorrectas | Aviso dentro de la página |
+| Registrar una póliza con vehículo nuevo | Aparecen en «Mis pólizas» y en el selector de reportes |
+| Registrar otra póliza para el mismo vehículo | Permite seleccionar únicamente vehículos propios |
+| Repetir número de póliza de una aseguradora | Mensaje de error, sin vehículo o póliza incompletos |
+| Intentar dar de alta póliza como ajustador | Acceso denegado |
 | Reporte con póliza propia y foto/video | Expediente y evidencias disponibles |
 | Intento de consultar un caso ajeno | Acceso denegado para el asegurado o ajustador ajeno |
 | Asignar y reasignar un ajustador | Nuevo responsable autorizado; anterior sin acceso en nuevas peticiones |
@@ -255,6 +227,8 @@ Al preparar esta documentación se ejecutó la prueba JavaScript del archivo fin
 | Mensajes desde los tres roles | Conversación compartida únicamente dentro del siniestro |
 | Dos siniestros diferentes | Historias de chat independientes |
 | Cambio de estatus | Historial con el nuevo movimiento |
+| Ajustador actualiza estatus de un caso asignado | Cambio y movimiento en historial; formulario visible en el expediente |
+| Ajustador intenta cambiar un caso ajeno o cerrado | Se rechaza la operación y no se altera el historial |
 | Reproducción de video | Visualización y búsqueda dentro del contenido |
 
 Para probar varias cuentas simultáneamente, utiliza perfiles de navegador distintos. Las pestañas de un mismo perfil comparten sesión.
@@ -266,7 +240,8 @@ Para probar varias cuentas simultáneamente, utiliza perfiles de navegador disti
 | No conecta a la base | Servicio iniciado, `DB_HOSTM`, puerto 3307 y credenciales locales |
 | Falta `sp_validar_usuario` | Importación de procedimientos en la misma base e instancia usadas por PHP |
 | El inicio de sesión no acepta el correo | Usar el alias registrado |
-| No aparecen pólizas para reportar | Relación `poliza.usuario_id` con la cuenta autenticada |
+| No aparecen pólizas para reportar | Registrar una desde «Mis pólizas» o verificar la relación `poliza.usuario_id` con la cuenta autenticada |
+| Placas o número de serie duplicados | Si ya existe el vehículo en tus pólizas, selecciónalo en el formulario; si es un registro antiguo sin póliza asociada, hay que revisar ese dato en la base |
 | No aparece un ajustador en el selector | Rol `ajustador` y `usuario.estatus = 1` |
 | Falla la carga de multimedia | Formato, peso, límites de PHP y `max_allowed_packet` |
 | El chat deja de permitir acceso | Sesión, estado activo, propiedad de la póliza o reasignación reciente |
@@ -280,4 +255,4 @@ Para probar varias cuentas simultáneamente, utiliza perfiles de navegador disti
 - `docs/diagramas/estructura.mmd` y `arquitectura_mvc.mmd`: diagramas editables en Mermaid.
 - `docs/diagramas/*.svg`: versiones vectoriales; `*.png`: imágenes para documentos o presentaciones.
 
-La documentación se elaboró revisando el código y los scripts SQL del archivo final. Los ejemplos describen esa versión; no suponen datos, usuarios o configuraciones adicionales existentes en otro equipo.
+Fin:)

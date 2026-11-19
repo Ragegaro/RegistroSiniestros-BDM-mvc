@@ -105,6 +105,14 @@ switch ($page) {
         require "controllers/poliza/PolizaC.php";
         (new PolizaC())->listarPolizas();
         break;
+    case 'agregarPoliza':
+        require_once 'controllers/poliza/PolizaC.php';
+        (new PolizaC())->mostrarFormularioAgregar();
+        break;
+    case 'guardarPoliza':
+        require_once 'controllers/poliza/PolizaC.php';
+        (new PolizaC())->guardarPoliza();
+        break;
 
     case 'guardarAuto':
         require_once "controllers/poliza/AutoC.php";
