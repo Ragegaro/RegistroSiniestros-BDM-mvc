@@ -1,110 +1,130 @@
-CREATE DATABASE bdm_aseguradora;
+CREATE DATABASE IF NOT EXISTS bdm_aseguradora CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE bdm_aseguradora;
 
-create table rol(
-	id tinyint unsigned  auto_increment primary key,
-	nombre varchar(50) not null,
-    slug varchar(50)
-    
+CREATE TABLE IF NOT EXISTS rol (
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    slug VARCHAR(50) NOT NULL UNIQUE
 );
-create table usuario (
-    id  INT(11) unsigned auto_increment primary key , 
-    nombre VARCHAR (50)NOT NULL,
-    apellido_p VARCHAR (50)NOT NULL,
-    apellido_m VARCHAR (50),
-    nacimiento date NOT NULL,
-    genero VARCHAR(20),
+
+CREATE TABLE IF NOT EXISTS usuario (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido_p VARCHAR(50) NOT NULL,
+    apellido_m VARCHAR(50) NULL,
+    nacimiento DATE NOT NULL,
+    genero VARCHAR(20) NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-	contrasena VARCHAR(255)NOT NULL,
-	alias VARCHAR (50)NOT NULL,
-    foto_perfil longblob,
-    estatus tinyint unsigned default (1),
-    
-    rol_id tinyint unsigned not null,
-    foreign key (rol_id) references rol (id)
+    contrasena VARCHAR(255) NOT NULL,
+    alias VARCHAR(50) NOT NULL,
+    foto_perfil LONGBLOB NULL,
+    estatus TINYINT UNSIGNED DEFAULT 1,
+    rol_id TINYINT UNSIGNED NOT NULL,
+    CONSTRAINT fk_usuario_rol FOREIGN KEY (rol_id) REFERENCES rol(id)
 );
 
-create table aseguradoras(
-	id int unsigned primary key auto_increment,
-	nombre varchar(100) not null
-);
-create table vehiculo(
-	id int unsigned primary key auto_increment,
-    marca varchar(30) not null,
-    modelo varchar(50)not null,
-    color varchar(30),
-    placas varchar (10) not null unique,
-    num_serie varchar(50) not null unique
-    /*poliza_id int unsigned,
-    foreign key (poliza_id) references poliza (id)*/
-);
-create table poliza(
-	id int unsigned auto_increment primary key,
-    num_poliza varchar(50) not null,
-    
-    aseguradora_id int unsigned not null,
-    usuario_id int unsigned not null,
-    vehiculo_id int unsigned not null,
-    unique (num_poliza,aseguradora_id),
-
-    foreign key (aseguradora_id) references aseguradoras(id),
-    foreign key (usuario_id) references usuario(id),
-    foreign key (vehiculo_id) references vehiculo(id)
+CREATE TABLE IF NOT EXISTS aseguradoras (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
 );
 
-create table estatus( 
-	id tinyint unsigned primary key auto_increment,
-	nombre varchar (100) not null
+CREATE TABLE IF NOT EXISTS vehiculo (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    marca VARCHAR(30) NOT NULL,
+    modelo VARCHAR(50) NOT NULL,
+    color VARCHAR(30) NULL,
+    placas VARCHAR(10) NOT NULL UNIQUE,
+    num_serie VARCHAR(50) NOT NULL UNIQUE
 );
-create table siniestro(
-	id int unsigned primary key auto_increment,
-	fecha date not null,
-	hora time not null,
-    direccion text not null,
-    descripcion text,
-    fecha_registro timestamp default current_timestamp,
-    ajustador_id int unsigned,-- not null,
-    poliza_id int  unsigned not null,
-    estatus_id tinyint unsigned,-- not null,
-    foreign key (poliza_id) references poliza(id),
-    foreign key (ajustador_id) references usuario (id),
-	foreign key (estatus_id) references estatus(id)
+
+CREATE TABLE IF NOT EXISTS poliza (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    num_poliza VARCHAR(50) NOT NULL,
+    aseguradora_id INT UNSIGNED NOT NULL,
+    usuario_id INT UNSIGNED NOT NULL,
+    vehiculo_id INT UNSIGNED NOT NULL,
+    UNIQUE KEY uq_poliza_aseguradora (num_poliza, aseguradora_id),
+    CONSTRAINT fk_poliza_aseguradora FOREIGN KEY (aseguradora_id) REFERENCES aseguradoras(id),
+    CONSTRAINT fk_poliza_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id),
+    CONSTRAINT fk_poliza_vehiculo FOREIGN KEY (vehiculo_id) REFERENCES vehiculo(id)
 );
-create table historialestatus(
-	id int unsigned primary key auto_increment,
-    fecha_actu timestamp default current_timestamp,
-    siniestro_id int unsigned not null,
-    estatus_id tinyint unsigned not null,
-    foreign key (siniestro_id) references siniestro(id),
-    foreign key (estatus_id) references estatus (id)    
-    );
-create table multimedia(
-	id int unsigned primary key auto_increment,
-    tipo enum ('Foto',"Video")not null,
-    archivo longblob null,
-    ruta varchar(255) null,
-    fecha timestamp default current_timestamp,
-    siniestro_id int unsigned not null,
-    foreign key (siniestro_id) references siniestro(id)
+
+CREATE TABLE IF NOT EXISTS estatus (
+    id TINYINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
 );
-create table chat(
-	id int unsigned primary key auto_increment,
-	mensaje text not null,
-	fechamensaje timestamp default current_timestamp,
-	siniestro_id int unsigned not null,
-	usuario_id int unsigned not null,
-    mensaje_padre int unsigned null,    
-    
-    foreign key (siniestro_id) references siniestro (id),
-    foreign key (usuario_id) references usuario (id),
-    foreign key (mensaje_padre) references chat (id)    
+
+CREATE TABLE IF NOT EXISTS siniestro (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    direccion TEXT NOT NULL,
+    descripcion TEXT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ajustador_id INT UNSIGNED NULL,
+    poliza_id INT UNSIGNED NOT NULL,
+    estatus_id TINYINT UNSIGNED NULL,
+    CONSTRAINT fk_siniestro_poliza FOREIGN KEY (poliza_id) REFERENCES poliza(id),
+    CONSTRAINT fk_siniestro_ajustador FOREIGN KEY (ajustador_id) REFERENCES usuario(id),
+    CONSTRAINT fk_siniestro_estatus FOREIGN KEY (estatus_id) REFERENCES estatus(id)
 );
- ----------------------------------------
- 
-/*
-alter table usuario add column  estatus tinyint unsigned default (1)
-alter table siniestro add column poliza_id int unsigned not null
-ALTER TABLE siniestro add constraint fk_siniestro_poliza foreign key(poliza_id)references poliza(id);
-alter table  siniestro drop column vehiculo_id
-*/
------------------------------
+
+CREATE TABLE IF NOT EXISTS historialestatus (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    fecha_actu TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    siniestro_id INT UNSIGNED NOT NULL,
+    estatus_id TINYINT UNSIGNED NOT NULL,
+    CONSTRAINT fk_historial_siniestro FOREIGN KEY (siniestro_id) REFERENCES siniestro(id),
+    CONSTRAINT fk_historial_estatus FOREIGN KEY (estatus_id) REFERENCES estatus(id)
+);
+
+CREATE TABLE IF NOT EXISTS multimedia (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    tipo ENUM('Foto','Video') NOT NULL,
+    archivo LONGBLOB NULL,
+    ruta VARCHAR(255) NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    siniestro_id INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_multimedia_siniestro FOREIGN KEY (siniestro_id) REFERENCES siniestro(id)
+);
+
+CREATE TABLE IF NOT EXISTS evaluacion (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    diagnostico TEXT NOT NULL,
+    fecha_evaluacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    siniestro_id INT UNSIGNED NOT NULL,
+    ajustador_id INT UNSIGNED NOT NULL,
+    UNIQUE KEY uq_evaluacion_siniestro (siniestro_id),
+    CONSTRAINT fk_evaluacion_siniestro FOREIGN KEY (siniestro_id) REFERENCES siniestro(id),
+    CONSTRAINT fk_evaluacion_ajustador FOREIGN KEY (ajustador_id) REFERENCES usuario(id)
+);
+
+CREATE TABLE IF NOT EXISTS chat (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mensaje TEXT NOT NULL,
+    fechamensaje TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    siniestro_id INT UNSIGNED NOT NULL,
+    usuario_id INT UNSIGNED NOT NULL,
+    mensaje_padre INT UNSIGNED NULL,
+    CONSTRAINT fk_chat_siniestro FOREIGN KEY (siniestro_id) REFERENCES siniestro(id),
+    CONSTRAINT fk_chat_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id),
+    CONSTRAINT fk_chat_padre FOREIGN KEY (mensaje_padre) REFERENCES chat(id)
+);
+
+INSERT INTO rol (nombre, slug)
+SELECT 'Asegurado', 'asegurado' WHERE NOT EXISTS (SELECT 1 FROM rol WHERE slug = 'asegurado');
+INSERT INTO rol (nombre, slug)
+SELECT 'Ajustador', 'ajustador' WHERE NOT EXISTS (SELECT 1 FROM rol WHERE slug = 'ajustador');
+INSERT INTO rol (nombre, slug)
+SELECT 'Supervisor', 'supervisor' WHERE NOT EXISTS (SELECT 1 FROM rol WHERE slug = 'supervisor');
+
+INSERT INTO estatus (nombre)
+SELECT 'En Evaluación' WHERE NOT EXISTS (SELECT 1 FROM estatus WHERE nombre = 'En Evaluación');
+INSERT INTO estatus (nombre)
+SELECT 'Aprobado' WHERE NOT EXISTS (SELECT 1 FROM estatus WHERE nombre = 'Aprobado');
+INSERT INTO estatus (nombre)
+SELECT 'Rechazado' WHERE NOT EXISTS (SELECT 1 FROM estatus WHERE nombre = 'Rechazado');
+INSERT INTO estatus (nombre)
+SELECT 'Pago en Proceso' WHERE NOT EXISTS (SELECT 1 FROM estatus WHERE nombre = 'Pago en Proceso');
+INSERT INTO estatus (nombre)
+SELECT 'Cerrado' WHERE NOT EXISTS (SELECT 1 FROM estatus WHERE nombre = 'Cerrado');

@@ -1,45 +1,26 @@
-<h1>Siniestros</h1>
-
-<div>
-
-    <?php if (empty($misSiniestros)): ?>
-        <p>Aún no tiene siniestros.</p>
-    <?php else:
-        
-        foreach($misSiniestros as $siniestro): 
-    ?>
-
-        <div>
-            <div>
-                <p>
-                    <strong>Póliza:</strong> <?php echo $siniestro->Poliza; ?><br>
-                    <strong>Modelo:</strong> <?php echo $siniestro->Modelo; ?><br>
-                    <strong>No. Siniestro:</strong> <?php echo $siniestro->id; ?><br>
-                    <strong>Fecha:</strong> <?php echo $siniestro->fecha; ?>
-                </p>
-            </div>
-
-            <div>
-                <div>
-                    <p><strong>Estatus:</strong></p>
-                    <?php echo $siniestro->Estatus; ?>
-                </div>
-
-                <a href="<?php echo urlsite?>?page=detalle&id=<?php echo $siniestro-> id;?>">
-                    Ver más
-                </a>
-            </div>
-        </div>
-
-    <?php  endforeach;
-        endif;
-    ?>
-
-
+<?php /* Listado adaptable al rol. */ ?>
+<div class="page-heading">
+    <h1>Siniestros</h1>
+    <p>Consulta el estado y los detalles de cada reporte.</p>
 </div>
-
-
-
-<?php //
-//  end foreach} ?>
-
+<section class="cards-grid">
+    <?php if (empty($misSiniestros)): ?>
+        <div class="empty-state"><h2>Todo tranquilo por aquí</h2><p>No hay siniestros para mostrar.</p></div>
+    <?php else: foreach ($misSiniestros as $siniestro): ?>
+        <article class="claim-card">
+            <div class="info">
+                <span class="card-number">Siniestro #<?php echo (int) $siniestro->id; ?></span>
+                <strong>Póliza:</strong> <?php echo htmlspecialchars($siniestro->Poliza); ?><br>
+                <?php if (($_SESSION['rol_slug'] ?? '') !== 'asegurado' && isset($siniestro->nombreCliente)): ?>
+                    <strong>Asegurado:</strong> <?php echo htmlspecialchars($siniestro->nombreCliente); ?><br>
+                <?php endif; ?>
+                <strong>Modelo:</strong> <?php echo htmlspecialchars($siniestro->Modelo); ?><br>
+                <strong>Fecha:</strong> <?php echo htmlspecialchars($siniestro->fecha); ?>
+            </div>
+            <div class="acciones">
+                <span class="status-badge"><?php echo htmlspecialchars($siniestro->Estatus); ?></span>
+                <a class="vermas" href="<?php echo urlsite ?>?page=detalle&amp;id=<?php echo (int) $siniestro->id; ?>">Ver detalles</a>
+            </div>
+        </article>
+    <?php endforeach; endif; ?>
+</section>

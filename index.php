@@ -1,186 +1,126 @@
 <?php
-    require "config.php";
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    $page = isset($_GET['page']) ? $_GET['page'] :'logIn';
+require "config.php";
+require_once __DIR__ . '/lib/Seguridad.php';
+require_once __DIR__ . '/lib/Avisos.php';
+if (session_status() === PHP_SESSION_NONE) session_start();
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+ob_start();
+set_exception_handler(['Avisos', 'excepcionNoControlada']);
+$page = isset($_GET['page']) && is_string($_GET['page']) ? $_GET['page'] : 'logIn';
+Avisos::limpiarUrlAntigua($page);
 
-    switch($page){
-    //-----------Usuarios------------//
-    //           LOG IN              //
-        case 'logIn':
-            require "controllers/usuario/UsuarioC.php";
-            $controller= new UsuarioC();
-            $controller->index();
-        break;  
-        
-        case 'logInAuth': 
-            require "controllers/usuario/UsuarioC.php";
-            $controller=new UsuarioC();
-            $controller->logIn();
+switch ($page) {
+    case 'logIn':
+    case 'login':
+        require "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->index();
+        break;
+    case 'logInAuth':
+        require "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->logIn();
+        break;
+    case 'logout':
+        require "controllers/usuario/UsuarioC.php";
+        UsuarioC::logOut();
+        break;
+    case 'sigIn':
+        require_once "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->mostrarRegistro();
+        break;
+    case 'sigInAuth':
+        require_once "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->procesarRegistro();
         break;
 
-
-        case 'logout': 
-            require "controllers/usuario/UsuarioC.php";
-            $controller= new UsuarioC();
-            $controller->logOut();
+    case 'supervisor':
+    case 'admin':
+    case 'ajustador':
+    case 'asegurado':
+        require_once "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->mostrarPerfil();
         break;
-    //           SIG IN              //
-        case 'sigIn':
-            require_once "controllers/usuario/UsuarioC.php";
-            $usuario = new UsuarioC();
-            $usuario->mostrarRegistro(); 
+    case 'miPerfil':
+        require_once "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->EditarPerfil();
         break;
-
-        case 'sigInAuth':
-            require_once "controllers/usuario/UsuarioC.php";
-            $usuario = new UsuarioC();
-            $usuario->procesarRegistro(); 
+    case 'editarPerfil':
+        require_once "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->procesarEdicion();
         break;
 
-    //           PERFILES            //
-    case 'supervisor': 
-            require_once "controllers/usuario/UsuarioC.php";
-            $controller = new UsuarioC();
-            $controller->mostrarPerfil();
-    break;
-
-        case 'ajustador':
-            require_once "controllers/usuario/UsuarioC.php";
-            $controller = new UsuarioC();
-            $controller->mostrarPerfil();
+    case 'report':
+        require_once "controllers/siniestro/SiniestroC.php";
+        (new SiniestroC())->mostrarFormulario();
+        break;
+    case 'guardarSiniestro':
+        require_once "controllers/siniestro/SiniestroC.php";
+        (new SiniestroC())->agregarSiniestro();
+        break;
+    case 'misSiniestros':
+        require_once "controllers/siniestro/SiniestroC.php";
+        (new SiniestroC())->listarSiniestros();
+        break;
+    case 'detalle':
+        require_once "controllers/siniestro/SiniestroC.php";
+        (new SiniestroC())->verDetalledSiniestro();
+        break;
+    case 'guardarEvaluacion':
+    case 'guardarEdicionEvaluacion':
+        require_once "controllers/siniestro/SiniestroC.php";
+        (new SiniestroC())->guardarEvaluacion();
+        break;
+    case 'actualizarEstatus':
+        require_once "controllers/siniestro/SiniestroC.php";
+        (new SiniestroC())->actualizarEstatus();
         break;
 
-        case 'asegurado':
-            require_once "controllers/usuario/UsuarioC.php";
-            $controller = new UsuarioC();
-            $controller->mostrarPerfil();
+    case 'asignaciones':
+        require_once 'controllers/siniestro/SiniestroC.php';
+        (new SiniestroC())->mostrarAsignaciones();
+        break;
+    case 'asignarAjustador':
+        require_once 'controllers/siniestro/SiniestroC.php';
+        (new SiniestroC())->asignarAjustador();
+        break;
+    case 'evidencia':
+        require_once 'controllers/siniestro/MultimediaC.php';
+        (new MultimediaC())->ver();
+        break;
+    case 'chatMensajes':
+        require_once 'controllers/siniestro/ChatC.php';
+        (new ChatC())->mensajes();
+        break;
+    case 'chatEnviar':
+        require_once 'controllers/siniestro/ChatC.php';
+        (new ChatC())->enviar();
         break;
 
-    
-
-
-        case 'miPerfil':
-            require_once "controllers/usuario/UsuarioC.php";
-            $usuario = new UsuarioC();
-            $usuario->EditarPerfil();   
-            //    require "views/usuario/EditProfileV.php";
+    case 'polizas':
+        require "controllers/poliza/PolizaC.php";
+        (new PolizaC())->listarPolizas();
+        break;
+    case 'agregarPoliza':
+        require_once 'controllers/poliza/PolizaC.php';
+        (new PolizaC())->mostrarFormularioAgregar();
+        break;
+    case 'guardarPoliza':
+        require_once 'controllers/poliza/PolizaC.php';
+        (new PolizaC())->guardarPoliza();
         break;
 
-        case 'editarPerfil':
-            require_once "controllers/usuario/UsuarioC.php";
-            $usuario = new UsuarioC();
-            $usuario->procesarEdicion(); 
-        break;
-
-
-        /*
-            case 'agregarAdminAjust':
-                require_once "controllers/usuario/UsuarioC.php";
-                $usuario = new UsuarioC();
-                $usuario->agregarAdminAjust();
-            break;  
-            
-            case 'editarSupervisor':
-                require_once "controllers/usuario/UsuarioC.php";
-                $usuario = new UsuarioC();
-                $usuario->editarSupervisor();
-            break;
-
-            case 'editarAjustador':
-            require_once "controllers/usuario/UsuarioC.php";
-            $usuario = new UsuarioC();
-            $usuario->editarAjustador();
-
-            case 'listar usuarios':
-                require_once "controllers/usuario/UsuarioC.php";
-                $usuario = new UsuarioC();
-                $usuario->listarUsuarios();
-
-        */
-
-    //            ROLES              //
-    //----------Siniestros-----------//
-    //        Alta siniestro         //
-        case 'report':
-            require_once "controllers/siniestro/SiniestroC.php";
-            $siniestro = new SiniestroC();
-            $siniestro->mostrarFormulario(); 
-        break;
-
-        case 'guardarSiniestro':
-            require_once "controllers/siniestro/SiniestroC.php";
-            $siniestro = new SiniestroC();
-            $siniestro->agregarSiniestro(); 
-        break;
-
-        case 'guardarEvaluacion':
-            require_once "controllers/SiniestroC.php";
-            $siniestro = new SiniestroC();
-            $siniestro->procesarEvaluacionYMultimedia();
-        break;
-    //       Lectura siniestros      //
-
-
-        case 'misSiniestros':   
-            require_once "controllers/siniestro/SiniestroC.php";
-            $controller = new SiniestroC();
-            $controller->listarSiniestros();
-        break;
-    
-        case 'detalle':
-            require_once "controllers/siniestro/SiniestroC.php";
-            $controller = new SiniestroC();
-            $controller->verDetalledSiniestro();
-        break;
-    //     Multimedia siniestros     //
-
-
-    
-    //-----------Polizas-------------//
-    //        Lectura polizas        //
-        
-        case 'polizas':
-            require "controllers/poliza/PolizaC.php";
-            $controller = new PolizaC();
-            $controller->listarPolizas();
-            
-        break;
-
-        /*
-            case 'detalle':
-                require "views/siniestros/detalle.php";
-            break;
-        */
-
-            
-    //            Autos              //
     case 'guardarAuto':
-            require_once "controllers/AutoC.php"; 
-            $auto = new AutoC();
-            $auto->agregarAuto(); 
+        require_once "controllers/poliza/AutoC.php";
+        (new AutoC())->agregarAuto();
+        break;
+    case 'agregarAuto':
+        require "views/layouts/header.php";
+        require "views/polizas/autos/agregarAutoV.php";
+        require "views/layouts/footer.php";
         break;
 
-
-
-
-
-        
-
-    //--------BOTONES MNAVBAR--------//
-    
-
-        case 'agregarAuto':
-            require "views/layouts/header.php";
-            require "views/autos/agregarAutoV.php";
+    default:
+        require "controllers/usuario/UsuarioC.php";
+        (new UsuarioC())->index();
         break;
-
-        
-    //------------DEFAULT------------//
-        default:
-            require "controllers/usuario/UsuarioC.php";
-            $controller= new UsuarioC();
-            $controller->index();
-        break;
-};
+}

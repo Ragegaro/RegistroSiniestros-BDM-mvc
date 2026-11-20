@@ -1,179 +1,162 @@
-<?php 
-    
-    require_once "models/usuario/UsuarioM.php";
+<?php
+require_once "models/usuario/UsuarioM.php";
 
-    class UsuarioC {
-        private $modelo;
-        
-        public function __construct() {
-            $this->modelo = new UsuarioM();
-        }
+class UsuarioC {
+    private $modelo;
 
-       public function index() {
-        if (isset($_SESSION['id_usuario'])) { 
-            header('location: index.php?page=' . $_SESSION['rol_slug']); 
-            exit;                  
+    public function __construct() {
+        $this->modelo = new UsuarioM();
+    }
+
+    public function index() {
+        if (isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?page=' . $_SESSION['rol_slug']);
+            exit;
         }
-        
         require "views/layouts/header.php";
         require "views/usuario/auth/LoginV.php";
         require "views/layouts/footer.php";
-        exit;                    
     }
-            
-        public function logIn(){
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $_alias = trim($_POST ['txtalias']);
-                $_pass = md5(trim($_POST['txtpassword']));
-                $_usuario = $this->modelo->logIn($_alias,$_pass);
 
-                if ($_usuario){
-                    $_SESSION['alias'] = $_usuario->alias;
-                    $_SESSION['rol_id']= $_usuario->rol_id;
-                    $_SESSION['rol_slug'] = $_usuario->slug;
-                    $_SESSION['id_usuario']=$_usuario->id;
-                    header('location:' . urlsite . "?page=" . $_SESSION['rol_slug']);
-                    exit;
-                } else {
-                    header('location:'.urlsite."?page=login&msg=No coinciden las credenciales");
-                    exit;
-                }
-            }
-
-        }
-        
-        public function mostrarPerfil() {
-            if (!isset($_SESSION['id_usuario'])) {
-               header('location:' . urlsite . "?page=login");
-                exit;
-            }
-            
-            $usuario = $this->modelo->obtenerPorID($_SESSION['id_usuario']);
-            require "views/layouts/header.php";
-            require "views/layouts/navbar.php";
-            
-            switch ($_SESSION['rol_slug']){
-                case 'supervisor':
-                    require "views/usuario/AjustadorAdminAuthV.php";
-                    require "views/siniestros/listarSiniestrosV.php";
-
-                break;
-
-                case 'ajustador':
-                    require "views/usuario/AjustadorAdminAuthV.php";
-                
-                break;
-                
-                case 'asegurado':
-                    require "views/usuario/UserAuthV.php";
-                break;
-
-                default:
-                    header('location: index.php?page=login');
-                exit;
-            }
-            require "views/layouts/footer.php";
-        }
- 
-        public static function logOut(){           
-            session_unset();
-            session_destroy();
-            header('location:'.urlsite);
+    public function logIn() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?page=logIn');
             exit;
-        }        
-
-        public function mostrarRegistro() {
-            if (isset($_SESSION['id_usuario'])) {
-                header('location: index.php?page=' . $_SESSION['rol_slug']);
-                exit;
-            }
-
-            require "views/layouts/header.php";
-            require "views/usuario/auth/RegisterV.php";
-            require "views/layouts/footer.php";
         }
 
-        public function procesarRegistro() {
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $passwordCifrada = md5($_POST['txtPassword']);
-                $fotoBinaria = null;
+        $alias = trim($_POST['txtalias'] ?? '');
+        $pass = md5(trim($_POST['txtpassword'] ?? ''));
+        $usuario = $this->modelo->logIn($alias, $pass);
 
-                if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == UPLOAD_ERR_OK) {
-                    $fotoBinaria = file_get_contents($_FILES['foto_perfil']['tmp_name']);
-                }
-
-                $resultado = $this->modelo->sigIn(
-                    $_POST['txtNombres'],
-                    $_POST['txtApellidoP'],
-                    $_POST['txtApellidoM'],
-                    $_POST['dateNacimiento'],
-                    $_POST['genero'],
-                    $_POST['txtEmail'],
-                    $passwordCifrada,
-                    $_POST['txtAlias'],
-                    $fotoBinaria
-                );
-
-                if ($resultado) {
-                    header("Location: index.php?page=login&success=1");
-                    exit;
-                } else {
-                    header("Location: index.php?page=sigIn&error=1");
-                    exit;
-                }
-            }
-        } 
-        
-        public static function EditarPerfil() {
-            if (!isset($_SESSION['id_usuario'])) {
-                header('location:' . urlsite );
-                exit;
-            }
-            $modelo = new UsuarioM();
-            $idUsuario = $_SESSION['id_usuario'];
-            $usuario = $modelo->obtenerPorID($idUsuario);
-            require "views/layouts/header.php";
-            require "views/layouts/navbar.php";
-            require "views/usuario/EditProfileV.php";
-            require "views/layouts/footer.php";
-            return $usuario;
-        }
-        
-        public function procesarEdicion() {
-            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btnEdit'])) {
-                
-                if (!isset($_SESSION['id_usuario'])) {
-                    header('location: index.php?page=login');
-                    exit;
-                }
-
-                $idUsuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null; 
-                $alias = $_POST['txtAlias'];
-                $emailFinal = !empty($_POST['txtNuevoEmail']) ? $_POST['txtNuevoEmail'] : $_POST['txtEmailActual'];
-
-                $passwordNueva = null;
-                if (!empty($_POST['txtPasswordNueva'])) {
-                    $passwordNueva = md5($_POST['txtPasswordNueva']);
-                }
-
-                $fotoBinaria = null;
-                if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] == UPLOAD_ERR_OK) {
-                    $fotoBinaria = file_get_contents($_FILES['foto_perfil']['tmp_name']);
-                }
-
-                $resultado = $this->modelo->editarUsuario($idUsuario, $emailFinal, $passwordNueva, $alias, $fotoBinaria);
-
-
-                if ($resultado) {
-                    header("Location: index.php?page=ajustes&success=1");
-                } else {
-                    header("Location: index.php?page=ajustes&error=1");
-                }
-                exit;
-            }
+        if ($usuario) {
+            $_SESSION['alias'] = $usuario->alias;
+            $_SESSION['rol_id'] = $usuario->rol_id;
+            $_SESSION['rol_slug'] = $usuario->slug;
+            $_SESSION['id_usuario'] = $usuario->id;
+            header('Location: ' . urlsite . '?page=' . $_SESSION['rol_slug']);
+            exit;
         }
 
-                
-     
+        header('Location: ' . urlsite . '?page=logIn&msg=No coinciden las credenciales');
+        exit;
     }
+
+    public function mostrarPerfil() {
+        if (!isset($_SESSION['id_usuario'])) {
+            header('Location: ' . urlsite . '?page=logIn');
+            exit;
+        }
+
+        $idUsuario = (int) $_SESSION['id_usuario'];
+        $rolUsuario = $_SESSION['rol_slug'] ?? '';
+        $usuario = $this->modelo->obtenerPorID($idUsuario);
+
+        require "views/layouts/header.php";
+        require "views/layouts/navbar.php";
+
+        if ($rolUsuario === 'supervisor' || $rolUsuario === 'admin') {
+            require_once "models/siniestro/SiniestroM.php";
+            $siniestroModel = new SiniestroM();
+            $datosDashboard = $siniestroModel->getDashboardAdmin();
+            require "views/usuario/AjustadorAdminAuthV.php";
+        } elseif ($rolUsuario === 'ajustador') {
+            require "views/usuario/AjustadorAdminAuthV.php";
+        } elseif ($rolUsuario === 'asegurado') {
+            require "views/usuario/UserAuthV.php";
+        } else {
+            header('Location: index.php?page=logIn');
+            exit;
+        }
+
+        require "views/layouts/footer.php";
+    }
+
+    public static function logOut() {
+        session_unset();
+        session_destroy();
+        header('Location: ' . urlsite);
+        exit;
+    }
+
+    public function mostrarRegistro() {
+        if (isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?page=' . $_SESSION['rol_slug']);
+            exit;
+        }
+        require "views/layouts/header.php";
+        require "views/usuario/auth/RegisterV.php";
+        require "views/layouts/footer.php";
+    }
+
+    public function procesarRegistro() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?page=sigIn');
+            exit;
+        }
+
+        if (($_POST['txtPassword'] ?? '') !== ($_POST['txtPassword_Confirm'] ?? '')) {
+            header('Location: index.php?page=sigIn&error=password');
+            exit;
+        }
+
+        $passwordCifrada = md5($_POST['txtPassword'] ?? '');
+        $fotoBinaria = null;
+        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+            $fotoBinaria = file_get_contents($_FILES['foto_perfil']['tmp_name']);
+        }
+
+        $resultado = $this->modelo->sigIn(
+            trim($_POST['txtNombres'] ?? ''),
+            trim($_POST['txtApellidoP'] ?? ''),
+            trim($_POST['txtApellidoM'] ?? ''),
+            $_POST['dateNacimiento'] ?? '',
+            $_POST['genero'] ?? null,
+            trim($_POST['txtEmail'] ?? ''),
+            $passwordCifrada,
+            trim($_POST['txtAlias'] ?? ''),
+            $fotoBinaria
+        );
+
+        header('Location: index.php?page=' . ($resultado ? 'logIn&success=1' : 'sigIn&error=1'));
+        exit;
+    }
+
+    public function EditarPerfil() {
+        if (!isset($_SESSION['id_usuario'])) {
+            header('Location: ' . urlsite);
+            exit;
+        }
+
+        $usuario = $this->modelo->obtenerPorID((int) $_SESSION['id_usuario']);
+        require "views/layouts/header.php";
+        require "views/layouts/navbar.php";
+        require "views/usuario/EditProfileV.php";
+        require "views/layouts/footer.php";
+    }
+
+    public function procesarEdicion() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['btnEdit'])) {
+            header('Location: index.php?page=miPerfil');
+            exit;
+        }
+        if (!isset($_SESSION['id_usuario'])) {
+            header('Location: index.php?page=logIn');
+            exit;
+        }
+
+        $idUsuario = (int) $_SESSION['id_usuario'];
+        $alias = trim($_POST['txtAlias'] ?? '');
+        $emailFinal = !empty($_POST['txtNuevoEmail']) ? trim($_POST['txtNuevoEmail']) : trim($_POST['txtEmailActual'] ?? '');
+        $passwordNueva = !empty($_POST['txtPasswordNueva']) ? md5($_POST['txtPasswordNueva']) : null;
+        $fotoBinaria = null;
+        if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+            $fotoBinaria = file_get_contents($_FILES['foto_perfil']['tmp_name']);
+        }
+
+        $resultado = $this->modelo->editarUsuario($idUsuario, $emailFinal, $passwordNueva, $alias, $fotoBinaria);
+        if ($resultado) $_SESSION['alias'] = $alias;
+        header('Location: index.php?page=miPerfil&' . ($resultado ? 'success=1' : 'error=1'));
+        exit;
+    }
+}
 ?>

@@ -1,40 +1,25 @@
-<div class="polizas">
-    <h1>Mis polizas</h1>
-    <!--<button  disabled="disabled"> Agregar polizas</button>-->
-</div>   
-
-<div class="contenedor-multiple">
+<?php /* Listado de pólizas recuperadas por PolizaC. */ ?>
+<div class="policy-list-heading">
+    <div class="page-heading"><h1>Mis pólizas</h1><p>Vehículos y seguros asociados a tu cuenta.</p></div>
+    <?php if (($_SESSION['rol_slug'] ?? '') === 'asegurado'): ?>
+        <a class="btn" href="<?php echo urlsite; ?>?page=agregarPoliza">+ Registrar póliza</a>
+    <?php endif; ?>
+</div>
+<section class="contenedor-multiple">
     <?php if (empty($misPolizas)): ?>
-    
-        <p>Aún no tienes pólizas registradas.</p>
-    
-    <?php else:
-        foreach($misPolizas as $poliza): 
-    ?>
-
-    <div class="P-S-individual">
-        <div class="info">
-            <strong>No. de Póliza:</strong> <?php echo $poliza->Poliza; ?> <br>    
-            <strong>Marca:</strong> <?php echo $poliza->Marca; ?> <br> 
-            <strong>Modelo:</strong> <?php echo $poliza->Modelo; ?><br>
-            <strong>Aseguradora:</strong> <?php echo $poliza->Aseguradora; ?> <br>
-           <!-- <strong>Fecha de Inicio:</strong> <?php //echo $poliza->FechaInicio; ?> <br>-->
+        <div class="empty-state"><h2>Aún no tienes pólizas</h2><p>Registra tu primera póliza y su vehículo para poder reportar siniestros.</p>
+            <?php if (($_SESSION['rol_slug'] ?? '') === 'asegurado'): ?><a class="btn" href="<?php echo urlsite; ?>?page=agregarPoliza">Registrar mi primera póliza</a><?php endif; ?>
         </div>
-
-        <div class="acciones">
-            <div class="estatus">
-                <button class="btn"> Eliminar</button>
+    <?php else: foreach ($misPolizas as $poliza): ?>
+        <article class="P-S-individual">
+            <div class="info">
+                <span class="card-number">Póliza <?php echo htmlspecialchars($poliza->Poliza); ?></span>
+                <strong>Vehículo:</strong> <?php echo htmlspecialchars($poliza->Marca . ' ' . $poliza->Modelo); ?><br>
+                <strong>Aseguradora:</strong> <?php echo htmlspecialchars($poliza->Aseguradora); ?>
             </div>
-            <a class="vermas" href="<?php echo urlsite?>?page=detallePoliza">
-                Ver más
-            </a>
-        </div>
-
-    </div>
-        
-        <?php endforeach; 
-        endif; ?>                
-
-
-
-</div>   
+            <div class="acciones"><span class="status-badge">Registrada</span>
+                <?php if (($_SESSION['rol_slug'] ?? '') === 'asegurado'): ?><a class="policy-report-link" href="<?php echo urlsite; ?>?page=report&amp;poliza=<?php echo (int) $poliza->id; ?>">Reportar siniestro</a><?php endif; ?>
+            </div>
+        </article>
+    <?php endforeach; endif; ?>
+</section>
