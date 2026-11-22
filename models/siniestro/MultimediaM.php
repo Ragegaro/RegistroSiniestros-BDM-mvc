@@ -14,27 +14,38 @@ class MultimediaM {
     }
 
     /** Guarda fotos y videos NUEVOS como archivos físicos; solo la ruta entra a SQL. */
-    public static function insertarRuta(PDO $pdo, $archivo, $idSiniestro) {
-        $base = dirname(__DIR__, 2);
-        $directorio = $base . '/uploads/siniestros/SIN-' . (int) $idSiniestro;
-        if (!is_dir($directorio) && !mkdir($directorio, 0755, true) && !is_dir($directorio)) {
-            throw new RuntimeException('No se pudo crear la carpeta de evidencias.');
-        }
-        $nombre = strtolower($archivo['tipo']) . '_' . bin2hex(random_bytes(16)) . '.' . $archivo['extension'];
-        $rutaRelativa = 'uploads/siniestros/SIN-' . (int) $idSiniestro . '/' . $nombre;
-        $rutaFisica = $base . '/' . $rutaRelativa;
-        if (!move_uploaded_file($archivo['tmp'], $rutaFisica)) {
-            throw new RuntimeException('No se pudo guardar la evidencia en el servidor. Revisa permisos de uploads/siniestros.');
-        }
-        try {
-            $stmt = $pdo->prepare('INSERT INTO multimedia (tipo, archivo, ruta, siniestro_id) VALUES (?, NULL, ?, ?)');
-            $stmt->execute([$archivo['tipo'], $rutaRelativa, (int) $idSiniestro]);
-            return $rutaFisica;
-        } catch (Throwable $error) {
-            @unlink($rutaFisica);
-            throw $error;
-        }
+public static function insertarRuta(PDO $pdo, $archivo, $idSiniestro) {
+    $base = dirname(__DIR__, 2);
+    $idSiniestro = (int) $idSiniestro;
+    $directorio = $base . '/uploads/siniestros/SIN-' . $idSiniestro;
+
+    if (!is_dir($directorio) && !mkdir($directorio, 0755, true) && !is_dir($directorio)) {
+        throw new RuntimeException('No se pudo crear la carpeta de evidencias.');
     }
+
+    $extension = $archivo['extension'] ?? ($archivo['tipo'] === 'Video' ? 'mp4' : 'jpg');
+    $extension = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $extension));
+    if ($extension === '') {
+        $extension = ($archivo['tipo'] === 'Video') ? 'mp4' : 'jpg';
+    }
+
+    $nombre = strtolower($archivo['tipo']) . '_' . bin2hex(random_bytes(16)) . '.' . $extension;
+    $rutaRelativa = 'uploads/siniestros/SIN-' . $idSiniestro . '/' . $nombre;
+    $rutaFisica = $directorio . '/' . $nombre;
+
+    if (!move_uploaded_file($archivo['tmp'], $rutaFisica)) {
+        throw new RuntimeException('No se pudo guardar la evidencia en el servidor. Revisa permisos de uploads/siniestros.');
+    }
+
+    try {
+        $stmt = $pdo->prepare('INSERT INTO multimedia (tipo, archivo, ruta, siniestro_id) VALUES (?, NULL, ?, ?)');
+        $stmt->execute([$archivo['tipo'], $rutaRelativa, $idSiniestro]);
+        return $rutaFisica;
+    } catch (Throwable $error) {
+        @unlink($rutaFisica);
+        throw $error;
+    }
+}
 
     /** No carga el BLOB entero: solo metadatos y la cabecera para detectar MIME. */
     public function obtener($id) {

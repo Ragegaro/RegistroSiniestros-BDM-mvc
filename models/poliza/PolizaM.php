@@ -24,7 +24,12 @@ class PolizaM {
     public function listarAseguradoras() {
         $pdo = $this->_db->conectar();
         try {
-            return $pdo->query('SELECT id, nombre FROM aseguradoras ORDER BY nombre')->fetchAll(PDO::FETCH_OBJ);
+            $stmt = $pdo->prepare('CALL sp_listar_aseguradoras()');
+            $stmt->execute();
+            $aseguradoras = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $stmt->closeCursor();
+            return $aseguradoras;
+
         } finally {
             $this->_db->desconectar();
         }
@@ -34,62 +39,90 @@ class PolizaM {
     public function listarVehiculosPropios($idUsuario) {
         $pdo = $this->_db->conectar();
         try {
-            $stmt = $pdo->prepare('SELECT DISTINCT v.id, v.marca, v.modelo, v.placas FROM vehiculo v INNER JOIN poliza p ON p.vehiculo_id = v.id WHERE p.usuario_id = ? ORDER BY v.marca, v.modelo');
+            $stmt =$pdo->prepare('CALL sp_obtener_vehiculos_usuario(?)');
             $stmt->execute([$idUsuario]);
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            $autos=$stmt->fetchAll(PDO::FETCH_OBJ);
+            $stmt->closeCursor();
+            return $autos;
         } finally {
             $this->_db->desconectar();
         }
     }
 
     /** El alta de póliza y vehículo se confirma completa o se revierte. */
-    public function registrarPolizaConVehiculo($datos, $idUsuario) {
+   public function registrarPolizaConVehiculo($datos, $idUsuario) {
         $pdo = $this->_db->conectar();
         try {
             $pdo->beginTransaction();
 
+            // 1. Aseguradora (nueva o existente)
             if ($datos['aseguradora_id'] === 'nueva') {
-                $stmt = $pdo->prepare('SELECT id FROM aseguradoras WHERE nombre = ? ORDER BY id LIMIT 1');
+                $stmt = $pdo->prepare('CALL sp_obtener_o_crear_aseguradora(?)');
                 $stmt->execute([$datos['aseguradora_nueva']]);
                 $aseguradoraId = (int) $stmt->fetchColumn();
-                if ($aseguradoraId === 0) {
-                    $stmt = $pdo->prepare('INSERT INTO aseguradoras (nombre) VALUES (?)');
-                    $stmt->execute([$datos['aseguradora_nueva']]);
-                    $aseguradoraId = (int) $pdo->lastInsertId();
+                $stmt->closeCursor();
+
+                if ($aseguradoraId <= 0) {
+                    throw new RuntimeException('No se pudo obtener o registrar la aseguradora.');
                 }
             } else {
                 $aseguradoraId = (int) $datos['aseguradora_id'];
-                $stmt = $pdo->prepare('SELECT id FROM aseguradoras WHERE id = ?');
+                $stmt = $pdo->prepare('CALL sp_validar_aseguradora_existe(?, @existe_aseg)');
                 $stmt->execute([$aseguradoraId]);
-                if (!$stmt->fetchColumn()) {
+                $stmt->closeCursor();
+
+                $existeAseg = (int) $pdo->query('SELECT @existe_aseg')->fetchColumn();
+                if ($existeAseg === 0) {
                     throw new RuntimeException('La aseguradora seleccionada ya no está disponible.');
                 }
             }
 
+            // 2. Vehículo (existente o nuevo)
             if ($datos['vehiculo_modo'] === 'existente') {
                 $vehiculoId = (int) $datos['vehiculo_id'];
-                $stmt = $pdo->prepare('SELECT 1 FROM poliza WHERE usuario_id = ? AND vehiculo_id = ? LIMIT 1');
+                $stmt = $pdo->prepare('CALL sp_validar_vehiculo_usuario(?, ?, @pertenece_veh)');
                 $stmt->execute([$idUsuario, $vehiculoId]);
-                if (!$stmt->fetchColumn()) {
+                $stmt->closeCursor();
+
+                $perteneceVeh = (int) $pdo->query('SELECT @pertenece_veh')->fetchColumn();
+                if ($perteneceVeh === 0) {
                     throw new RuntimeException('El vehículo seleccionado no pertenece a tus pólizas.');
                 }
             } else {
-                $stmt = $pdo->prepare('INSERT INTO vehiculo (marca, modelo, color, placas, num_serie) VALUES (?, ?, ?, ?, ?)');
+                $color = $datos['color'] !== '' ? $datos['color'] : null;
+                $stmt = $pdo->prepare('CALL sp_Registrar_vehiculo(?, ?, ?, ?, ?, @vehiculo_id)');
                 $stmt->execute([
-                    $datos['marca'], $datos['modelo'], $datos['color'] !== '' ? $datos['color'] : null,
-                    $datos['placas'], $datos['serie']
+                    $datos['marca'],
+                    $datos['modelo'],
+                    $color,
+                    $datos['placas'],
+                    $datos['serie']
                 ]);
-                $vehiculoId = (int) $pdo->lastInsertId();
+                $stmt->closeCursor();
+
+                $vehiculoId = (int) $pdo->query('SELECT @vehiculo_id')->fetchColumn();
             }
 
-            $stmt = $pdo->prepare('SELECT 1 FROM poliza WHERE num_poliza = ? AND aseguradora_id = ? LIMIT 1');
+            // 3. Validar póliza duplicada
+            $stmt = $pdo->prepare('CALL sp_validar_poliza_duplicada(?, ?, @poliza_dup)');
             $stmt->execute([$datos['numero_poliza'], $aseguradoraId]);
-            if ($stmt->fetchColumn()) {
+            $stmt->closeCursor();
+
+            $polizaDuplicada = (int) $pdo->query('SELECT @poliza_dup')->fetchColumn();
+            if ($polizaDuplicada > 0) {
                 throw new RuntimeException('Ese número de póliza ya está registrado con la aseguradora indicada.');
             }
 
-            $stmt = $pdo->prepare('INSERT INTO poliza (num_poliza, aseguradora_id, usuario_id, vehiculo_id) VALUES (?, ?, ?, ?)');
-            $stmt->execute([$datos['numero_poliza'], $aseguradoraId, $idUsuario, $vehiculoId]);
+            // 4. Registrar la póliza
+            $stmt = $pdo->prepare('CALL sp_registrar_poliza_V(?, ?, ?, ?)');
+            $stmt->execute([
+                $datos['numero_poliza'],
+                $aseguradoraId,
+                $idUsuario,
+                $vehiculoId,
+            ]);
+            $stmt->closeCursor();
+
             $pdo->commit();
             return true;
         } catch (Throwable $error) {
