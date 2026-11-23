@@ -1,5 +1,5 @@
 <?php
-    require_once "models/AutoM.php";
+    require_once "models/poliza/AutoM.php";
     
     class AutoC{
         private  $auto;

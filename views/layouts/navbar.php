@@ -9,13 +9,13 @@ $inicio = $rol !== '' ? $rol : 'logIn';
 
         <?php if ($rol === 'asegurado'): ?>
             <a href="<?php echo urlsite ?>?page=report">Reportar siniestro</a>
-            <a href="<?php echo urlsite ?>?page=misSiniestros">Siniestros</a>
+            <a href="<?php echo urlsite ?>?page=misSiniestros">Buscar siniestros</a>
             <a href="<?php echo urlsite ?>?page=polizas">Pólizas</a>
             <a href="<?php echo urlsite ?>?page=agregarPoliza">Registrar póliza</a>
         <?php elseif ($rol === 'ajustador'): ?>
-            <a href="<?php echo urlsite ?>?page=misSiniestros">Siniestros asignados</a>
+            <a href="<?php echo urlsite ?>?page=misSiniestros">Buscar mis siniestros</a>
         <?php elseif ($rol === 'supervisor' || $rol === 'admin'): ?>
-            <a href="<?php echo urlsite ?>?page=misSiniestros">Siniestros</a>
+            <a href="<?php echo urlsite ?>?page=misSiniestros">Buscar siniestros</a>
             <a href="<?php echo urlsite ?>?page=asignaciones">Asignar ajustadores</a>
         <?php endif; ?>
 

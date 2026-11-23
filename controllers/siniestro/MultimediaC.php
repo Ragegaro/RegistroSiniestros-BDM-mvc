@@ -16,7 +16,7 @@ class MultimediaC {
         }
         try {
             $modelo = new MultimediaM();
-            $media = $modelo->obtener(Seguridad::entero($_GET, 'id'));
+            $media = $modelo->obtener(Seguridad::entero($_GET, 'id'), (int)$_SESSION['id_usuario']);
             if (!$media || !Seguridad::puedeVer($media)) {
                 http_response_code(404);
                 exit;
@@ -28,6 +28,12 @@ class MultimediaC {
             if ($total === 0) {
                 $ruta = Archivos::rutaHeredada($media['ruta']);
                 if (!$ruta) {
+                    // Ruta guardada en MySQL, pero el archivo no existe en esta copia del proyecto.
+                    $idEvidencia = (int) ($media['id'] ?? 0);
+                    $idCaso = (int) ($media['siniestro_id'] ?? 0);
+                    $rutaRelativa = str_replace(["\r", "\n"], '', (string) ($media['ruta'] ?? ''));
+                    error_log('Evidencia fisica no encontrada: multimedia_id=' . $idEvidencia
+                        . ' siniestro_id=' . $idCaso . ' ruta=' . $rutaRelativa);
                     http_response_code(404);
                     exit;
                 }
@@ -68,8 +74,12 @@ class MultimediaC {
                 try {
                     fseek($recurso, $inicio);
                     for ($pos = $inicio; $pos <= $fin && !connection_aborted();) {
+                        // fread() acepta exactamente dos argumentos; el tercero causaba
+                        // ArgumentCountError y cortaba la reproduccion de videos por ruta.
                         $datos = fread($recurso, min(Archivos::BLOQUE_BYTES, $fin - $pos + 1));
-                        if ($datos === false || $datos === '') break;
+                        if ($datos === false || $datos === '') {
+                            throw new RuntimeException('Se interrumpio la lectura de la evidencia.');
+                        }
                         echo $datos;
                         $pos += strlen($datos);
                         flush();
@@ -79,7 +89,7 @@ class MultimediaC {
                 }
             } else {
                 for ($pos = $inicio; $pos <= $fin && !connection_aborted();) {
-                    $datos = $modelo->bloque($media['id'], $pos, min(Archivos::BLOQUE_BYTES, $fin - $pos + 1));
+                    $datos = $modelo->bloque($media['id'], $pos, min(Archivos::BLOQUE_BYTES, $fin - $pos + 1), (int)$_SESSION['id_usuario']);
                     if (!is_string($datos) || $datos === '') throw new RuntimeException('La evidencia está incompleta.');
                     echo $datos;
                     $pos += strlen($datos);

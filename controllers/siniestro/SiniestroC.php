@@ -86,11 +86,32 @@ class SiniestroC {
 
     public function listarSiniestros() {
         $this->exigirSesion();
-        $idUsuario = (int) $_SESSION['id_usuario'];
+        $idUsuario = (int)$_SESSION['id_usuario'];
         $rolUsuario = $_SESSION['rol_slug'] ?? '';
-        $misSiniestros = $this->modelo->obtenerSiniestrosPorRol($idUsuario, $rolUsuario);
-        $misSiniestros = is_array($misSiniestros) ? $misSiniestros : [];
-
+        $mostrarFiltros = in_array($rolUsuario, ['ajustador','supervisor','admin'], true);
+        $filtros = ['q' => '', 'estatus' => 0, 'ajustador' => 0, 'desde' => null, 'hasta' => null];
+        if ($mostrarFiltros) {
+            $q = Seguridad::texto($_GET, 'q');
+            $filtros['q'] = function_exists('mb_substr') ? mb_substr($q, 0, 150) : substr($q, 0, 150);
+            $filtros['estatus'] = max(-1, Seguridad::entero($_GET, 'estatus'));
+            $filtros['ajustador'] = $rolUsuario==='ajustador' ? 0 : max(-1, Seguridad::entero($_GET, 'ajustador'));
+            foreach (['desde','hasta'] as $campo) {
+                $texto = Seguridad::texto($_GET, $campo);
+                if ($texto !== '') {
+                    $dt = DateTime::createFromFormat('!Y-m-d', $texto);
+                    if (!$dt || $dt->format('Y-m-d') !== $texto) {
+                        Avisos::ir('misSiniestros', 'error', 'Fecha de búsqueda inválida.');
+                    }
+                    $filtros[$campo] = $texto;
+                }
+            }
+            if ($filtros['desde'] && $filtros['hasta'] && $filtros['desde'] > $filtros['hasta']) {
+                Avisos::ir('misSiniestros', 'error', 'La fecha inicial debe ser anterior a la final.');
+            }
+        }
+        $misSiniestros = $this->modelo->buscarSiniestros($idUsuario, $filtros);
+        $estatusDisponibles = $mostrarFiltros ? $this->modelo->obtenerEstatus() : [];
+        $ajustadores = Seguridad::esSupervisor() ? $this->modelo->catalogoAjustadoresBusqueda($idUsuario) : [];
         require "views/layouts/header.php";
         require "views/layouts/navbar.php";
         require "views/siniestros/listarSiniestrosV.php";
@@ -101,7 +122,7 @@ class SiniestroC {
         $this->exigirSesion();
         header('Cache-Control: private, no-store, max-age=0');
         $idSiniestro = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-        $siniestro = $idSiniestro > 0 ? $this->modelo->obtenerPorID($idSiniestro) : false;
+        $siniestro = $idSiniestro > 0 ? $this->modelo->obtenerPorID($idSiniestro, (int)$_SESSION['id_usuario']) : false;
 
         if (!$siniestro) {
             Avisos::paginaError('Siniestro no encontrado.', 404);
@@ -111,11 +132,11 @@ class SiniestroC {
             Avisos::ir('misSiniestros', 'error', 'No tienes acceso a ese siniestro.');
         }
 
-        $siniestro['multimedia'] = $this->modelo->obtenerMultimediaPorSiniestro($idSiniestro);
-        $historial = $this->modelo->getHistorialEstatus($idSiniestro);
+        $siniestro['multimedia'] = $this->modelo->obtenerMultimediaPorSiniestro($idSiniestro, (int)$_SESSION['id_usuario']);
+        $historial = $this->modelo->getHistorialEstatus($idSiniestro, (int)$_SESSION['id_usuario']);
         $estatusDisponibles = $this->modelo->obtenerEstatus();
-        $evaluacion = $this->modelo->obtenerEvaluacion($idSiniestro);
-        $ajustadores = Seguridad::esSupervisor() ? $this->modelo->obtenerAjustadoresActivos() : [];
+        $evaluacion = $this->modelo->obtenerEvaluacion($idSiniestro, (int)$_SESSION['id_usuario']);
+        $ajustadores = Seguridad::esSupervisor() ? $this->modelo->obtenerAjustadoresActivos((int)$_SESSION['id_usuario']) : [];
 
         require_once __DIR__ . '/../../models/siniestro/ChatM.php';
         $chatDatos = ['mensajes' => [], 'participantes' => [], 'hay_anteriores' => false];
@@ -150,7 +171,7 @@ class SiniestroC {
 
         $idSiniestro = isset($_POST['id_siniestro']) ? (int) $_POST['id_siniestro'] : 0;
         $diagnostico = Seguridad::texto($_POST, 'diagnostico');
-        $siniestro = $idSiniestro > 0 ? $this->modelo->obtenerPorID($idSiniestro) : false;
+        $siniestro = $idSiniestro > 0 ? $this->modelo->obtenerPorID($idSiniestro, (int)$_SESSION['id_usuario']) : false;
 
         if (!$siniestro || !$this->puedeVerSiniestro($siniestro) || $diagnostico === '') {
             Avisos::ir('misSiniestros', 'error', 'No se pudo guardar la evaluación. Revisa el diagnóstico y tus permisos sobre el expediente.');
@@ -200,7 +221,7 @@ class SiniestroC {
                 return empty($caso->ajustador_id) && strcasecmp(trim($caso->Estatus), 'Cerrado') !== 0;
             });
         }
-        $ajustadores = $this->modelo->obtenerAjustadoresActivos();
+        $ajustadores = $this->modelo->obtenerAjustadoresActivos((int)$_SESSION['id_usuario']);
         require 'views/layouts/header.php';
         require 'views/layouts/navbar.php';
         require 'views/siniestros/asignaciones.php';
@@ -217,7 +238,7 @@ class SiniestroC {
             if ($id <= 0 || $ajustador <= 0 || !isset($_POST['ajustador_id']) || filter_var($_POST['ajustador_id'], FILTER_VALIDATE_INT) === false) {
                 throw new RuntimeException('Selecciona un siniestro y un responsable válidos.');
             }
-            $this->modelo->asignarAjustador($id, $ajustador);
+            $this->modelo->asignarAjustador($id, $ajustador, (int)$_SESSION['id_usuario']);
             Avisos::poner('success', 'Ajustador asignado correctamente.');
         } catch (Throwable $e) {
             Avisos::poner('error', Avisos::registrarError($e, 'guardar la asignación'));
